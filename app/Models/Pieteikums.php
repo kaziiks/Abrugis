@@ -9,7 +9,7 @@ class Pieteikums extends Model
     protected $table = 'pieteikums';
 
 protected $fillable = [
-    'paving_type_id', 'client_name', 'client_email', 'client_phone',
+    'bruga_veids_id', 'client_name', 'client_email', 'client_phone',
     'project_description', 'area_m2', 'status', 'admin_notes'
 ];
 

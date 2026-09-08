@@ -1,39 +1,47 @@
-<!DOCTYPE html>
-<html lang="lv">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Ienākt</title>
-</head>
-<body>
+<x-layout title="Abrugis" body-class="site-shell">
 	<main>
-		<h1>Ienākt</h1>
+		<section class="hero" id="par-mums">
+			<div class="hero-copy">
+				<p class="eyebrow">Bruģēšana · Rīga un visa Latvija</p>
+				<h1>Aigara<br><em>Bruģēšanas darbi</em></h1>
+				<p class="lead">Veidojam ilgmūžīgus bruģa risinājumus pagalmiem, terasēm un piebraucamiem ceļiem. No pirmās skices līdz pēdējam akmenim.</p>
+			</div>
+			<div class="hero-image">
+				<div class="hero-stamp">14+<small>gadi pieredzes</small></div>
+			</div>
+		</section>
 
-		@if ($errors->any())
-			<ul>
-				@foreach ($errors->all() as $error)
-					<li>{{ $error }}</li>
-				@endforeach
-			</ul>
-		@endif
+		<section class="section" id="darbi">
+			<div class="section-title">
+				<div><p class="eyebrow">Izlase no mūsu darbiem</p><h2>Portfolio</h2></div>
+				<span class="count">{{ str_pad($portfolio->count(), 2, '0', STR_PAD_LEFT) }} projekti</span>
+			</div>
+			<div class="projects">
+				@php
+					$fallbackImages = [
+						asset('images/fallback1.jpg'),
+						asset('images/fallback2.jpg'),
+						asset('images/fallback3.jpg'),
+					];
+				@endphp
+				@forelse ($portfolio as $index => $project)
+					<article class="project">
+						<div class="project-image">
+							<img src="{{ $fallbackImages[$index % count($fallbackImages)] }}" alt="{{ $project->title }}">
+						</div>
+						<h3>{{ $project->title }}</h3><p>{{ $project->city }} · {{ $project->area_m2 }} m² · {{ $project->completed_year }}</p><p>{{ $project->description }}</p>
+					</article>
+				@empty
+					<p class="empty-state">Portfolio projekti drīzumā būs apskatāmi šeit.</p>
+				@endforelse
+			</div>
+		</section>
+		<br><br>
 
-		<form method="POST" action="/login">
-			@csrf
-			<label for="email">E-pasts</label>
-			<input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus>
-
-			<label for="password">Parole</label>
-			<input id="password" name="password" type="password" required>
-
-			<label>
-				<input type="checkbox" name="remember" value="1">
-				Atcerēties mani
-			</label>
-
-			<button type="submit">Ienākt</button>
-		</form>
-
-		<a href="{{ route('register') }}">Reģistrēties</a>
+		<section class="section" id="kontakti">
+			<p class="eyebrow">Ir projekts prātā?</p><h2>Parunāsim par<br><em>jūsu pagalmu.</em></h2>
+			<a class="button" href="mailto:info@abrugis.lv">Sazināties ar mums</a>
+		</section>
 	</main>
-</body>
-</html>
+	<footer class="footer"><span>ABRUGIS © {{ date('Y') }}</span><span>Bruģējam ar nodomu.</span></footer>
+</x-layout>

@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="lv">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reģistrēties</title>
-</head>
-<body>
+<x-layout title="Reģistrēties | Abrugis">
     <main>
         <h1>Reģistrēties</h1>
 
@@ -36,5 +29,4 @@
 
         <a href="{{ route('login') }}">Atpakaļ uz login</a>
     </main>
-</body>
-</html>
+</x-layout>

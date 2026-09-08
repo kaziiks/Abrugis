@@ -1,9 +1,73 @@
-@import 'tailwindcss';
+    		.nav {
+			align-items: center;
+			background: white;
+			display: flex;
+			gap: 28px;
+			justify-content: center;
+			padding: 20px;
+		}
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+		header {
+			position: sticky;
+			top: 0;
+			z-index: 10;
+		}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
+		.logo {
+			font-weight: 700;
+			letter-spacing: 2px;
+			text-decoration: none;
+		}
+
+		.nav-links {
+			align-items: center;
+			display: flex;
+			gap: 20px;
+		}
+
+		.nav-links a {
+			color: inherit;
+			font-size: 14px;
+			text-decoration: none;
+		}
+
+		.nav-links a:hover {
+			text-decoration: underline;
+		}
+
+		@media (max-width: 650px) {
+			.nav,
+			.nav-links {
+				flex-wrap: wrap;
+				gap: 12px;
+            }
+        }
+
+		.projects {
+			display: grid;
+			gap: 24px;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		.project-image {
+			aspect-ratio: 4 / 3;
+			overflow: hidden;
+		}
+
+		.project-image img {
+			height: 100%;
+			object-fit: cover;
+			width: 100%;
+		}
+
+		@media (max-width: 900px) {
+			.projects {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+		}
+
+		@media (max-width: 600px) {
+			.projects {
+				grid-template-columns: 1fr;
+			}
+		}
