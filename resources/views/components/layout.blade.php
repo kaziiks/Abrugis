@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Abrugis' }}</title>
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="{{ $bodyClass ?? '' }}">
     <header>
@@ -13,8 +13,9 @@
             <div class="nav-links">
                 <a href="{{ url('/#darbi') }}">Darbi</a>
                 <a href="{{ url('/#par-mums') }}">Par mums</a>
+                <a href="{{ route('calc') }}">Kalkulators</a>
                 <a href="{{ url('/#kontakti') }}">Kontakti</a>
-                <a href="{{ route('form') }}">izveidot pieteikumu</a>
+                <a href="{{ route('form') }}">Izveidot pieteikumu</a>
             </div>
         </nav>
     </header>

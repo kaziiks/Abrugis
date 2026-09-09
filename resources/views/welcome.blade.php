@@ -2,7 +2,7 @@
 	<main>
 		<section class="hero" id="par-mums">
 			<div class="hero-copy">
-				<p class="eyebrow">Bruģēšana · Rīga un visa Latvija</p>
+				<p class="eyebrow">Bruģēšana · Rīgā un visā Latvija</p>
 				<h1>Aigara<br><em>Bruģēšanas darbi</em></h1>
 				<p class="lead">Veidojam ilgmūžīgus bruģa risinājumus pagalmiem, terasēm un piebraucamiem ceļiem. No pirmās skices līdz pēdējam akmenim.</p>
 			</div>
@@ -40,7 +40,8 @@
 
 		<section class="section" id="kontakti">
 			<p class="eyebrow">Ir projekts prātā?</p><h2>Parunāsim par<br><em>jūsu pagalmu.</em></h2>
-			<a class="button" href="mailto:info@abrugis.lv">Sazināties ar mums</a>
+			<a href="{{ route('form') }}">Sazināties ar mums</a>
+			<a>example@gmail.com</a>
 		</section>
 	</main>
 	<footer class="footer"><span>ABRUGIS © {{ date('Y') }}</span><span>Bruģējam ar nodomu.</span></footer>
