@@ -13,9 +13,25 @@
             <div class="nav-links">
                 <a href="{{ url('/#darbi') }}">Darbi</a>
                 <a href="{{ url('/#par-mums') }}">Par mums</a>
-                <a href="{{ route('calc') }}">Kalkulators</a>
                 <a href="{{ url('/#kontakti') }}">Kontakti</a>
-                <a href="{{ route('form') }}">Izveidot pieteikumu</a>
+                @if (auth()->user()?->role === 'admin')
+                    <a href="{{ route('admin.dashboard') }}">Admin panelis</a>
+                @else
+                    <a href="{{ route('calc') }}">Kalkulators</a>
+                    @auth
+                        <a href="{{ route('form') }}">Izveidot pieteikumu</a>
+                    @endauth
+                @endif
+            </div>
+            <div class="auth-links">
+                @auth
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit">Iziet</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}">Ienākt</a>
+                @endauth
             </div>
         </nav>
     </header>

@@ -25,7 +25,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/');
+        return redirect()->intended(Auth::user()?->role === 'admin' ? route('admin.dashboard') : '/');
     }
 
     public function showRegister(): View

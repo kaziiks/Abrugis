@@ -6,12 +6,15 @@ use App\Models\BrugaVeids;
 use App\Models\Pieteikums;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class PieteikumsController extends Controller
 {
     public function create(): View
     {
+        abort_if(Auth::user()?->role === 'admin', 403);
+
         return view('form', [
             'brugaVeidi' => BrugaVeids::all(),
         ]);
@@ -19,6 +22,8 @@ class PieteikumsController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        abort_if(Auth::user()?->role === 'admin', 403);
+
         $validated = $request->validate([
             'client_name' => ['required', 'string', 'max:255'],
             'client_email' => ['required', 'email', 'max:255'],

@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PieteikumsController;
 use App\Models\BrugaVeids;
 use App\Models\PortfolioInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,12 +16,16 @@ Route::get('/', function () {
 });
 
 Route::get('/calc', function () {
+    abort_if(Auth::user()?->role === 'admin', 403);
+
     return view('calc', [
         'brugaVeidi' => BrugaVeids::orderBy('price_per_m2')->get(),
     ]);
 })->name('calc');
 
 Route::post('/calc', function (Request $request) {
+    abort_if(Auth::user()?->role === 'admin', 403);
+
     $validated = $request->validate([
         'area' => ['required', 'numeric', 'min:1', 'max:100000'],
         'paving' => ['required', 'numeric', 'min:0'],
@@ -55,6 +61,14 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/form', [PieteikumsController::class, 'create'])->name('form');
     Route::post('/form', [PieteikumsController::class, 'store'])->name('form.store');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    Route::post('/portfolio', [AdminController::class, 'storePortfolio'])->name('portfolio.store');
+    Route::put('/portfolio/{portfolio}', [AdminController::class, 'updatePortfolio'])->name('portfolio.update');
+    Route::delete('/portfolio/{portfolio}', [AdminController::class, 'destroyPortfolio'])->name('portfolio.destroy');
+    Route::patch('/pieteikumi/{pieteikums}', [AdminController::class, 'updatePieteikums'])->name('pieteikumi.update');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])
