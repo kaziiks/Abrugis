@@ -5,6 +5,10 @@
 				<p class="eyebrow">Bruģēšana · Rīgā un visā Latvija</p>
 				<h1>Aigara<br><em>Bruģēšanas darbi</em></h1>
 				<p class="lead">Veidojam ilgmūžīgus bruģa risinājumus pagalmiem, terasēm un piebraucamiem ceļiem. No pirmās skices līdz pēdējam akmenim.</p>
+				<div class="hero-actions">
+					<a href="{{ route('form') }}" class="primary-btn">Sazināties</a>
+					<a href="#darbi" class="secondary-btn">Portfolio</a>
+				</div>
 			</div>
 			<div class="hero-image">
 				<div class="hero-stamp">14+<small>gadi pieredzes</small></div>
@@ -19,10 +23,7 @@
 			<div class="projects">
 				@php
 					$fallbackImages = [
-						asset('images/fallback1.jpg'),
-						asset('images/fallback2.jpg'),
-						asset('images/fallback3.jpg'),
-					];
+						
 				@endphp
 				@forelse ($portfolio as $index => $project)
 					<article class="project">
@@ -39,7 +40,6 @@
 		<br><br>
 
 		<section class="section" id="kontakti">
-			<p class="eyebrow">Ir projekts prātā?</p><h2>Parunāsim par<br><em>jūsu pagalmu.</em></h2>
 			<a href="{{ route('form') }}">Sazināties ar mums</a>
 			<a>example@gmail.com</a>
 		</section>
