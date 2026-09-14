@@ -7,6 +7,7 @@ use App\Models\Pieteikums;
 use App\Models\PortfolioInfo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -14,8 +15,8 @@ class AdminController extends Controller
     public function index(): View
     {
         return view('admin.dashboard', [
-            'portfolio' => PortfolioInfo::latest()->get(),
-            'pieteikumi' => Pieteikums::with('pavingType')->latest()->get(),
+            'portfolio' => PortfolioInfo::with(['user', 'brugaVeids'])->latest()->get(),
+            'pieteikumi' => Pieteikums::with(['user', 'pavingType'])->latest()->get(),
             'brugaVeidi' => BrugaVeids::orderBy('name')->get(),
         ]);
     }
@@ -23,6 +24,8 @@ class AdminController extends Controller
     public function storePortfolio(Request $request): RedirectResponse
     {
         $validated = $this->validatePortfolio($request);
+        $validated['user_id'] = Auth::id();
+
         PortfolioInfo::create($validated);
 
         return back()->with('success', 'Portfolio projekts pievienots.');
@@ -47,6 +50,9 @@ class AdminController extends Controller
         $validated = $request->validate([
             'status' => ['required', 'string', 'in:new,contacted,approved,completed,rejected'],
             'admin_notes' => ['nullable', 'string', 'max:5000'],
+        ], [
+            'status.required' => 'Lūdzu, izvēlieties pieteikuma statusu.',
+            'status.in' => 'Statuss nav derīgs.',
         ]);
 
         $pieteikums->update($validated);
@@ -63,6 +69,10 @@ class AdminController extends Controller
             'city' => ['required', 'string', 'max:255'],
             'area_m2' => ['nullable', 'numeric', 'min:0', 'max:100000'],
             'completed_year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
+        ], [
+            'bruga_veids_id.required' => 'Lūdzu, izvēlieties bruģa veidu.',
+            'title.required' => 'Lūdzu, ievadiet projekta nosaukumu.',
+            'city.required' => 'Lūdzu, ievadiet pilsētu.',
         ]);
     }
 }

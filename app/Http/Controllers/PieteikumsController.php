@@ -16,7 +16,7 @@ class PieteikumsController extends Controller
         abort_if(Auth::user()?->role === 'admin', 403);
 
         return view('form', [
-            'brugaVeidi' => BrugaVeids::all(),
+            'brugaVeidi' => BrugaVeids::orderBy('name')->get(),
         ]);
     }
 
@@ -31,10 +31,19 @@ class PieteikumsController extends Controller
             'bruga_veids_id' => ['nullable', 'exists:bruga_veids,id'],
             'area_m2' => ['nullable', 'numeric', 'min:1', 'max:100000'],
             'project_description' => ['required', 'string', 'max:5000'],
+        ], [
+            'client_name.required' => 'Lūdzu, ievadiet savu vārdu.',
+            'client_email.required' => 'Lūdzu, ievadiet e-pasta adresi.',
+            'client_email.email' => 'E-pasta adrese nav derīga.',
+            'client_phone.required' => 'Lūdzu, ievadiet telefona numuru.',
+            'project_description.required' => 'Lūdzu, aprakstiet savu projektu.',
         ]);
+
+        $validated['user_id'] = Auth::id();
+        $validated['status'] = 'new';
 
         Pieteikums::create($validated);
 
-        return redirect()->route('form')->with('success', 'Pieteikums nosūtīts! Sazināsimies ar jums tuvākajā laikā.');
+        return redirect()->route('form')->withInput()->with('success', 'Pieteikums nosūtīts! Sazināsimies ar jums tuvākajā laikā.');
     }
 }

@@ -1,0 +1,570 @@
+:root {
+    --ink: #1d2925;
+    --muted: #64706a;
+    --paper: #fbfaf7;
+    --sand: #eee7dc;
+    --line: rgba(79, 91, 82, 0.16);
+    --accent: #b69768;
+    --accent-dark: #806442;
+    --shadow: 0 22px 55px rgba(41, 45, 38, 0.09);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    color: inherit;
+}
+
+.site-shell {
+    min-height: 100vh;
+}
+
+.site-shell main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 18px 72px;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(12px);
+}
+
+.nav {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.nav-links,
+.auth-links {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.auth-links form {
+    margin: 0;
+}
+
+.auth-links button {
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 28px;
+    align-items: center;
+}
+
+.hero-copy h1,
+.calculator-intro h1 {
+    margin: 0;
+}
+
+.hero-copy h1 em,
+.calculator-intro h1 em {
+    display: block;
+    font-style: normal;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 26px;
+}
+
+.primary-btn,
+.secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.secondary-btn {
+    border: 1px solid #d1b89b;
+}
+
+.hero-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-stamp {
+    display: grid;
+    place-items: center;
+    text-align: center;
+}
+
+.hero-stamp small {
+    display: block;
+}
+
+.section-title {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.projects {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.project-image {
+    overflow: hidden;
+}
+
+.project-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#kontakti,
+.footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.footer {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 18px 42px;
+}
+
+.auth-shell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    padding: 32px 0;
+}
+
+.auth-card {
+    width: min(100%, 520px);
+}
+
+.auth-form,
+.application-form,
+.calculator-form {
+    display: grid;
+    gap: 18px;
+}
+
+.auth-form label {
+    display: block;
+}
+
+.checkbox-row {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-row input,
+.choice input,
+.checkbox-choice input {
+    width: auto;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.application-form label,
+.calculator-form > label,
+.calculator-form legend {
+    display: grid;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.application-form textarea,
+.calculator-form textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.calculator-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: start;
+    gap: 24px;
+}
+
+.calculator-form fieldset {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+}
+
+.input-with-unit {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.choice,
+.checkbox-choice {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.choice span,
+.checkbox-choice span {
+    display: grid;
+    gap: 4px;
+}
+
+.estimate-card {
+    min-height: 320px;
+}
+
+body {
+    background:
+        radial-gradient(circle at 12% 8%, rgba(255,255,255,0.8), transparent 26rem),
+        linear-gradient(135deg, #f8f5ef 0%, #eee7dc 100%);
+    color: var(--ink);
+    font-family: "Instrument Sans", "Segoe UI", Arial, sans-serif;
+}
+
+header {
+    background: rgba(248, 245, 239, 0.78);
+    border-bottom-color: rgba(128, 100, 66, 0.15);
+}
+
+.nav {
+    min-height: 72px;
+}
+
+.logo {
+    color: var(--ink);
+    font-size: 0.82rem;
+    letter-spacing: 0.24em;
+}
+
+.nav-links a,
+.auth-links a {
+    position: relative;
+    color: #46524c;
+    transition: color 0.2s ease;
+}
+
+.nav-links a::after,
+.auth-links a::after {
+    position: absolute;
+    right: 0;
+    bottom: -6px;
+    left: 0;
+    height: 2px;
+    border-radius: 99px;
+    background: var(--accent);
+    content: "";
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.2s ease;
+}
+
+.nav-links a:hover,
+.auth-links a:hover {
+    color: var(--accent-dark);
+}
+
+.nav-links a:hover::after,
+.auth-links a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.hero {
+    position: relative;
+    min-height: 480px;
+    padding: clamp(28px, 6vw, 72px);
+    border: 1px solid rgba(128, 100, 66, 0.18);
+    border-radius: 30px;
+    background: linear-gradient(125deg, rgba(255,255,255,0.9), rgba(239, 229, 215, 0.82));
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.hero::after {
+    position: absolute;
+    right: -110px;
+    bottom: -160px;
+    width: 380px;
+    height: 380px;
+    border: 1px solid rgba(128, 100, 66, 0.15);
+    border-radius: 50%;
+    content: "";
+}
+
+.hero-copy {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-copy h1 {
+    max-width: 700px;
+    font-size: clamp(3rem, 7vw, 6.4rem);
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+}
+
+.hero-copy h1 em {
+    color: var(--accent-dark);
+}
+
+.hero-image {
+    min-height: 310px;
+    border: 1px solid rgba(128, 100, 66, 0.18);
+    border-radius: 24px;
+    background: linear-gradient(145deg, #cdbda8, #f9f6f0 70%);
+    box-shadow: inset 0 0 0 10px rgba(255,255,255,0.2);
+}
+
+.hero-stamp {
+    width: 176px;
+    height: 176px;
+    background: var(--ink);
+    box-shadow: 0 20px 36px rgba(29, 41, 37, 0.23);
+}
+
+.section {
+    margin-top: 54px;
+}
+
+.section-title {
+    margin-bottom: 24px;
+    padding-top: 26px;
+    border-top-color: var(--line);
+}
+
+.section-title h2 {
+    color: var(--ink);
+    letter-spacing: -0.035em;
+}
+
+.count {
+    color: var(--accent-dark);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.projects {
+    gap: 24px;
+}
+
+.project {
+    padding: 14px;
+    border: 1px solid rgba(128, 100, 66, 0.16);
+    border-radius: 20px;
+    background: rgba(255,255,255,0.76);
+    box-shadow: 0 12px 25px rgba(41, 45, 38, 0.045);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.project:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 40px rgba(41, 45, 38, 0.11);
+}
+
+.project-image {
+    border-radius: 14px;
+}
+
+.project h3 {
+    margin-top: 18px;
+    color: var(--ink);
+    font-size: 1.25rem;
+}
+
+.project p {
+    color: var(--muted);
+}
+
+#kontakti {
+    margin-top: 54px;
+    padding: 26px 0 0;
+    border-top-color: var(--line);
+}
+
+#kontakti a:first-child {
+    display: inline-flex;
+    padding: 13px 18px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+}
+
+.footer {
+    color: var(--muted);
+    border-top-color: var(--line);
+}
+
+.auth-card,
+.form-shell,
+.calculator-form {
+    border: 1px solid rgba(128, 100, 66, 0.17);
+    border-radius: 26px;
+    background: rgba(255,255,255,0.82);
+    box-shadow: var(--shadow);
+}
+
+.auth-card h1,
+.form-intro h1,
+.form-heading h2,
+.calculator-intro h1 {
+    letter-spacing: -0.04em;
+}
+
+.auth-form input,
+.auth-form textarea,
+.auth-form select,
+.application-form input,
+.application-form textarea,
+.application-form select,
+.calculator-form input,
+.calculator-form select,
+.calculator-form textarea {
+    border-color: rgba(128, 100, 66, 0.22);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.88);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-form input:focus,
+.auth-form textarea:focus,
+.auth-form select:focus,
+.application-form input:focus,
+.application-form textarea:focus,
+.application-form select:focus,
+.calculator-form input:focus,
+.calculator-form select:focus,
+.calculator-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(182, 151, 104, 0.16);
+}
+
+.auth-form button,
+.application-form button,
+.calculate-button {
+    min-height: 48px;
+    border-radius: 14px;
+    background: var(--ink);
+    box-shadow: 0 12px 20px rgba(29, 41, 37, 0.15);
+}
+
+.form-intro,
+.form-heading {
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+}
+
+.form-intro p:last-child,
+.calculator-lead {
+    color: var(--muted);
+}
+
+.choice,
+.checkbox-choice {
+    border-color: rgba(128, 100, 66, 0.18);
+    background: rgba(250,247,243,0.9);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.choice:hover,
+.checkbox-choice:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+    .hero {
+        min-height: auto;
+    }
+
+    .calculator-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .site-shell main {
+        padding-top: 20px;
+    }
+
+    .nav {
+        padding: 14px 16px;
+        align-items: flex-start;
+    }
+
+    .nav-links,
+    .auth-links {
+        gap: 9px;
+    }
+
+    .hero {
+        padding: 26px 20px;
+        border-radius: 22px;
+    }
+
+    .hero-copy h1 {
+        font-size: clamp(2.8rem, 15vw, 4.3rem);
+    }
+
+    .hero-image {
+        min-height: 220px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #kontakti,
+    .footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .form-shell,
+    .calculator-form,
+    .estimate-card,
+    .auth-card {
+        padding: 20px;
+        border-radius: 20px;
+    }
+}

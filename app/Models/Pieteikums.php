@@ -3,23 +3,37 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Pieteikums extends Model
 {
     protected $table = 'pieteikums';
 
-protected $fillable = [
-    'bruga_veids_id', 'client_name', 'client_email', 'client_phone',
-    'project_description', 'area_m2', 'status', 'admin_notes'
-];
+    protected $fillable = [
+        'user_id',
+        'bruga_veids_id',
+        'client_name',
+        'client_email',
+        'client_phone',
+        'project_description',
+        'area_m2',
+        'status',
+        'admin_notes',
+    ];
 
-public function pavingType()
-{
-    return $this->belongsTo(BrugaVeids::class);
-}
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
-public function review()
-{
-    return $this->hasOne(Atsauksme::class);
-}
+    public function pavingType(): BelongsTo
+    {
+        return $this->belongsTo(BrugaVeids::class, 'bruga_veids_id');
+    }
+
+    public function review(): HasOne
+    {
+        return $this->hasOne(Atsauksme::class);
+    }
 }

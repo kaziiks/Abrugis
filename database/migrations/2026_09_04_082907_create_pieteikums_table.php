@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pieteikums', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('bruga_veids_id')->nullable()->constrained()->nullOnDelete();
             $table->string('client_name');
             $table->string('client_email');
