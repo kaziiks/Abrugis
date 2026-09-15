@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Abrugis' }}</title>
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body class="{{ $bodyClass ?? '' }}">
     <header>

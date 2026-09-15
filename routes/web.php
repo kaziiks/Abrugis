@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AtsauksmeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\HomeController;
@@ -22,6 +23,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/form', [PieteikumsController::class, 'create'])->name('form');
     Route::post('/form', [PieteikumsController::class, 'store'])->name('form.store');
+    Route::post('/atsauksmes', [AtsauksmeController::class, 'store'])->name('atsauksmes.store');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -29,6 +31,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/portfolio', [AdminController::class, 'storePortfolio'])->name('portfolio.store');
     Route::put('/portfolio/{portfolio}', [AdminController::class, 'updatePortfolio'])->name('portfolio.update');
     Route::delete('/portfolio/{portfolio}', [AdminController::class, 'destroyPortfolio'])->name('portfolio.destroy');
+    Route::delete('/portfolio-bildes/{bilde}', [AdminController::class, 'destroyPortfolioBilde'])->name('portfolio.bildes.destroy');
     Route::patch('/pieteikumi/{pieteikums}', [AdminController::class, 'updatePieteikums'])->name('pieteikumi.update');
 });
 

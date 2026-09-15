@@ -58,5 +58,84 @@
                 <p class="success-note" role="status">{{ session('success') }}</p>
             @endif
         </section>
+
+        <section class="form-shell applications-shell">
+            <div class="form-intro">
+                <p class="eyebrow">Klienta zona</p>
+                <h2>Mani pieteikumi</h2>
+                <p>Šeit vari redzēt savu pieteikumu statusu un iesniegto informāciju.</p>
+            </div>
+
+            @if ($pieteikumi->isEmpty())
+                <p class="empty-state">Te vēl nav nosūtītu pieteikumu.</p>
+            @else
+                <div class="application-list">
+                    @php
+                        $statusLabels = [
+                            'new' => 'Jauns',
+                            'contacted' => 'Sazināsimies',
+                            'approved' => 'Apstiprināts',
+                            'completed' => 'Pabeigts',
+                            'rejected' => 'Noraidīts',
+                        ];
+                    @endphp
+                    @foreach ($pieteikumi as $pieteikums)
+                        <article class="application-item">
+                            <div class="application-item-heading">
+                                <div>
+                                    <span class="application-date">{{ $pieteikums->created_at->format('d.m.Y H:i') }}</span>
+                                    <h3>{{ $pieteikums->project_description }}</h3>
+                                </div>
+                                <span class="status-badge status-{{ $pieteikums->status }}">{{ $statusLabels[$pieteikums->status] ?? $pieteikums->status }}</span>
+                            </div>
+                            <div class="application-meta">
+                                <span>{{ $pieteikums->pavingType?->name ?? 'Bruģa veids nav norādīts' }}</span>
+                                <span>{{ $pieteikums->area_m2 ? $pieteikums->area_m2 . ' m²' : 'Platība nav norādīta' }}</span>
+                            </div>
+                            @if ($pieteikums->review)
+                                <p class="application-review-note">Atsauksme iesniegta · {{ $pieteikums->review->rating }}/5 zvaigznes</p>
+                            @elseif ($pieteikums->status === 'completed')
+                                <p class="application-review-note application-review-pending">Par šo pieteikumu vari atstāt atsauksmi zemāk.</p>
+                            @endif
+                        </article>
+                    @endforeach
+                </div>
+            @endif
+        </section>
+
+        @if ($pieteikumi->contains(fn ($pieteikums) => $pieteikums->status === 'completed' && ! $pieteikums->review))
+            <section class="form-shell review-shell">
+                <div class="form-intro">
+                    <p class="eyebrow">Tava pieredze</p>
+                    <h2>Atstāt atsauksmi</h2>
+                    <p>Dalies ar pieredzi par pabeigtu projektu.</p>
+                </div>
+                <form class="application-form" method="POST" action="{{ route('atsauksmes.store') }}">
+                    @csrf
+                    <label for="pieteikums_id">Pabeigtais projekts
+                        <select id="pieteikums_id" name="pieteikums_id" required>
+                            @foreach ($pieteikumi as $pieteikums)
+                                @if ($pieteikums->status === 'completed' && ! $pieteikums->review)
+                                    <option value="{{ $pieteikums->id }}">{{ $pieteikums->project_description }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </label>
+                    <label for="rating">Vērtējums
+                        <select id="rating" name="rating" required>
+                            <option value="5">5 zvaigznes</option>
+                            <option value="4">4 zvaigznes</option>
+                            <option value="3">3 zvaigznes</option>
+                            <option value="2">2 zvaigznes</option>
+                            <option value="1">1 zvaigzne</option>
+                        </select>
+                    </label>
+                    <label for="atsauksme">Atsauksme
+                        <textarea id="atsauksme" name="atsauksme" rows="4" maxlength="2000" placeholder="Kā jums patika sadarbība?"></textarea>
+                    </label>
+                    <button type="submit">Nosūtīt atsauksmi</button>
+                </form>
+            </section>
+        @endif
     </main>
 </x-layout>

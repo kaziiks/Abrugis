@@ -17,6 +17,10 @@ class PieteikumsController extends Controller
 
         return view('form', [
             'brugaVeidi' => BrugaVeids::orderBy('name')->get(),
+            'pieteikumi' => Pieteikums::where('user_id', Auth::id())
+                ->with(['pavingType', 'review'])
+                ->latest()
+                ->get(),
         ]);
     }
 

@@ -20,6 +20,16 @@
 				<div><p class="eyebrow">Izlase no mūsu darbiem</p><h2>Portfolio</h2></div>
 				<span class="count">{{ str_pad($portfolio->count(), 2, '0', STR_PAD_LEFT) }} projekti</span>
 			</div>
+			<form class="portfolio-filter" method="GET" action="{{ url('/') }}#darbi">
+				<label for="bruga_veids_id">Filtrēt pēc bruģa veida</label>
+				<select id="bruga_veids_id" name="bruga_veids_id" onchange="this.form.submit()">
+					<option value="">Visi bruģa veidi</option>
+					@foreach ($brugaVeidi as $brugaVeids)
+						<option value="{{ $brugaVeids->id }}" @selected($selectedPavingTypeId === $brugaVeids->id)>{{ $brugaVeids->name }}</option>
+					@endforeach
+				</select>
+				<noscript><button class="secondary-btn" type="submit">Filtrēt</button></noscript>
+			</form>
 			<div class="projects">
 				@php
 					$fallbackImages = [
@@ -31,12 +41,29 @@
 				@forelse ($portfolio as $index => $project)
 					<article class="project">
 						<div class="project-image">
-							<img src="{{ $fallbackImages[$index % count($fallbackImages)] }}" alt="{{ $project->title }}">
+							<img src="{{ $project->bildes->first() ? asset('storage/' . $project->bildes->first()->image_path) : $fallbackImages[$index % count($fallbackImages)] }}" alt="{{ $project->title }}">
 						</div>
-						<h3>{{ $project->title }}</h3><p>{{ $project->city }} · {{ $project->area_m2 }} m² · {{ $project->completed_year }}</p><p>{{ $project->description }}</p>
+						<h3>{{ $project->title }}</h3><p>{{ $project->brugaVeids?->name ?? 'Bruģa veids nav norādīts' }} · {{ $project->city }} · {{ $project->area_m2 }} m² · {{ $project->completed_year }}</p><p>{{ $project->description }}</p>
 					</article>
 				@empty
 					<p class="empty-state">Portfolio projekti drīzumā būs apskatāmi šeit.</p>
+				@endforelse
+			</div>
+		</section>
+
+		<section class="section testimonials" id="atsauksmes">
+			<div class="section-title">
+				<div><p class="eyebrow">Klientu pieredze</p><h2>Atsauksmes</h2></div>
+			</div>
+			<div class="testimonial-grid">
+				@forelse ($atsauksmes as $atsauksme)
+					<article class="testimonial">
+						<div class="testimonial-rating" aria-label="{{ $atsauksme->rating }} no 5 zvaigznēm">{{ str_repeat('★', $atsauksme->rating) }}<span>{{ str_repeat('★', 5 - $atsauksme->rating) }}</span></div>
+						<p>“{{ $atsauksme->atsauksme ?: 'Lieliska sadarbība un kvalitatīvs darbs.' }}”</p>
+						<strong>{{ $atsauksme->author_name }}</strong>
+					</article>
+				@empty
+					<p class="empty-state">Klientu atsauksmes drīzumā būs apskatāmas šeit.</p>
 				@endforelse
 			</div>
 		</section>
