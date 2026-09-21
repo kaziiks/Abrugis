@@ -65,7 +65,6 @@ class AdminController extends Controller
     {
         $validated = $request->validate([
             'status' => ['required', 'string', 'in:new,contacted,approved,completed,rejected'],
-            'admin_notes' => ['nullable', 'string', 'max:5000'],
         ], [
             'status.required' => 'Lūdzu, izvēlieties pieteikuma statusu.',
             'status.in' => 'Statuss nav derīgs.',

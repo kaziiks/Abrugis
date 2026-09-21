@@ -1,9 +1,9 @@
-<x-layout title="Ielogoties | Abrugis">
+<x-layout title="{{ __('Log in') }} | Abrugis">
     <main>
         <section class="auth-shell">
             <div class="auth-card">
-                <p class="eyebrow">Piekļuve lietotājam</p>
-                <h1>Ielogoties</h1>
+                <p class="eyebrow">{{ __('User access') }}</p>
+                <h1>{{ __('Log in') }}</h1>
 
                 @if ($errors->any())
                     <ul class="error-list" role="alert">
@@ -16,21 +16,21 @@
                 <form method="POST" action="{{ route('login') }}" class="auth-form">
                     @csrf
 
-                    <label for="email">E-pasts</label>
+                    <label for="email">{{ __('Email') }}</label>
                     <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus>
 
-                    <label for="password">Parole</label>
+                    <label for="password">{{ __('Password') }}</label>
                     <input id="password" name="password" type="password" required>
 
                     <label class="checkbox-row">
                         <input type="checkbox" name="remember" value="1">
-                        <span>Atcerēties mani</span>
+                        <span>{{ __('Remember me') }}</span>
                     </label>
 
-                    <button type="submit">Ielogoties</button>
+                    <button type="submit">{{ __('Log in') }}</button>
                 </form>
 
-                <p class="auth-meta">Vēl nav konta? <a href="{{ route('register') }}">Reģistrēties</a></p>
+                <p class="auth-meta">{{ __('No account yet?') }} <a href="{{ route('register') }}">{{ __('Register') }}</a></p>
             </div>
         </section>
     </main>

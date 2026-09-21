@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::get('/language/{locale}', function (string $locale) {
+    abort_unless(in_array($locale, ['lv', 'en', 'ru'], true), 404);
+
+    session(['locale' => $locale]);
+
+    return back();
+})->name('language');
+
 Route::get('/calc', [CalculatorController::class, 'index'])->name('calc');
 Route::post('/calc', [CalculatorController::class, 'calculate'])->name('calc.calculate');
 

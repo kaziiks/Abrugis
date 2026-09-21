@@ -17,5 +17,6 @@ class BrugaVeids extends Model
     public function portfolioItems(): HasMany
     {
         return $this->hasMany(PortfolioInfo::class, 'bruga_veids_id');
-    }
+    
+}
 }

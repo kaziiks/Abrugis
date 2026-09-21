@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="lv">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,29 +8,36 @@
 </head>
 <body class="{{ $bodyClass ?? '' }}">
     <header>
-        <nav class="nav" aria-label="Galvenā navigācija">
+        <nav class="nav" aria-label="{{ __('Main navigation') }}">
             <a class="logo" href="{{ url('/') }}">ABRUGIS</a>
             <div class="nav-links">
-                <a href="{{ url('/#darbi') }}">Darbi</a>
-                <a href="{{ url('/#par-mums') }}">Par mums</a>
-                <a href="{{ url('/#kontakti') }}">Kontakti</a>
+                <a href="{{ url('/#darbi') }}">{{ __('Works') }}</a>
+                <a href="{{ url('/#par-mums') }}">{{ __('About us') }}</a>
+                <a href="{{ url('/#kontakti') }}">{{ __('Contacts') }}</a>
                 @if (auth()->user()?->role === 'admin')
-                    <a href="{{ route('admin.dashboard') }}">Admin panelis</a>
+                    <a href="{{ route('admin.dashboard') }}">{{ __('Admin panel') }}</a>
                 @else
-                    <a href="{{ route('calc') }}">Kalkulators</a>
+                    <a href="{{ route('calc') }}">{{ __('Calculator') }}</a>
                     @auth
-                        <a href="{{ route('form') }}">Izveidot pieteikumu</a>
+                        <a href="{{ route('form') }}">{{ __('Create an application') }}</a>
                     @endauth
                 @endif
             </div>
             <div class="auth-links">
+                <div class="language-switcher" aria-label="{{ __('Choose language') }}">
+                    <a href="{{ route('language', 'lv') }}" @class(['active' => app()->getLocale() === 'lv'])>LV</a>
+                    <span>/</span>
+                    <a href="{{ route('language', 'en') }}" @class(['active' => app()->getLocale() === 'en'])>EN</a>
+                    <span>/</span>
+                    <a href="{{ route('language', 'ru') }}" @class(['active' => app()->getLocale() === 'ru'])>RU</a>
+                </div>
                 @auth
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit">Iziet</button>
+                        <button type="submit">{{ __('Log out') }}</button>
                     </form>
                 @else
-                    <a href="{{ route('login') }}">Ienākt</a>
+                    <a href="{{ route('login') }}">{{ __('Log in') }}</a>
                 @endauth
             </div>
         </nav>
