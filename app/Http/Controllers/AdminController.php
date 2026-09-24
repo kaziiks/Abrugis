@@ -6,6 +6,7 @@ use App\Models\BrugaVeids;
 use App\Models\Pieteikums;
 use App\Models\PortfolioBilde;
 use App\Models\PortfolioInfo;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +15,43 @@ use Illuminate\View\View;
 
 class AdminController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
+    {
+        try {
+            $calendarMonth = Carbon::createFromFormat('!Y-m', $request->string('calendar_month')->toString() ?: now()->format('Y-m'));
+        } catch (\Throwable) {
+            $calendarMonth = now()->startOfMonth();
+        }
+
+        $calendarMonth->startOfMonth();
+        $calendarApplications = Pieteikums::with('pavingType')
+            ->whereNotNull('requested_date')
+            ->where('status', '!=', 'rejected')
+            ->whereBetween('requested_date', [$calendarMonth->copy()->startOfMonth(), $calendarMonth->copy()->endOfMonth()])
+            ->orderBy('requested_date')
+            ->get()
+            ->groupBy(fn (Pieteikums $pieteikums): string => $pieteikums->requested_date->format('Y-m-d'));
+
+        return view('admin.dashboard', [
+            'adminSection' => 'calendar',
+            'calendarMonth' => $calendarMonth,
+            'calendarApplications' => $calendarApplications,
+        ]);
+    }
+
+    public function applications(): View
     {
         return view('admin.dashboard', [
-            'portfolio' => PortfolioInfo::with(['user', 'brugaVeids', 'bildes'])->latest()->get(),
+            'adminSection' => 'applications',
             'pieteikumi' => Pieteikums::with(['user', 'pavingType'])->latest()->get(),
+        ]);
+    }
+
+    public function portfolio(): View
+    {
+        return view('admin.dashboard', [
+            'adminSection' => 'portfolio',
+            'portfolio' => PortfolioInfo::with(['user', 'brugaVeids', 'bildes'])->latest()->get(),
             'brugaVeidi' => BrugaVeids::orderBy('name')->get(),
         ]);
     }

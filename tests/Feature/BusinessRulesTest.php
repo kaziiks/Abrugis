@@ -10,7 +10,9 @@ use App\Models\PortfolioInfo;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\ApplicationSubmitted;
 use Tests\TestCase;
 
 class BusinessRulesTest extends TestCase
@@ -52,7 +54,7 @@ class BusinessRulesTest extends TestCase
         $otherApplication = $this->createPieteikums($otherUser, 'Cita lietotāja projekts');
 
         $this->actingAs($user)
-            ->get(route('form'))
+            ->get(route('applications'))
             ->assertOk()
             ->assertSee($ownApplication->project_description)
             ->assertDontSee($otherApplication->project_description);
@@ -61,18 +63,47 @@ class BusinessRulesTest extends TestCase
     public function test_application_submission_is_assigned_to_authenticated_user(): void
     {
         $user = User::factory()->create();
+        Mail::fake();
 
         $this->actingAs($user)->post(route('form.store'), [
             'client_name' => 'Anna Pirma',
             'client_email' => 'anna@example.com',
             'client_phone' => '+37120000000',
             'project_description' => 'Jauns pagalms',
-        ])->assertRedirect(route('form'));
+        ])->assertRedirect(route('applications'));
 
         $this->assertDatabaseHas('pieteikums', [
             'user_id' => $user->id,
             'client_email' => 'anna@example.com',
             'status' => 'new',
+        ]);
+
+        Mail::assertSent(ApplicationSubmitted::class, 2);
+    }
+
+    public function test_application_submission_rejects_an_already_reserved_date(): void
+    {
+        $firstUser = User::factory()->create();
+        $secondUser = User::factory()->create();
+        $requestedDate = now()->addWeek()->toDateString();
+
+        $this->createPieteikums($firstUser, 'Pirma rezervācija');
+        Pieteikums::where('project_description', 'Pirma rezervācija')->update([
+            'requested_date' => $requestedDate,
+        ]);
+
+        $this->actingAs($secondUser)
+            ->post(route('form.store'), [
+                'client_name' => 'Otrais klients',
+                'client_email' => $secondUser->email,
+                'client_phone' => '+37120000001',
+                'requested_date' => $requestedDate,
+                'project_description' => 'Otra rezervācija',
+            ])
+            ->assertSessionHasErrors('requested_date');
+
+        $this->assertDatabaseMissing('pieteikums', [
+            'project_description' => 'Otra rezervācija',
         ]);
     }
 

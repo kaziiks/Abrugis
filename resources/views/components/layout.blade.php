@@ -15,11 +15,25 @@
                 <a href="{{ url('/#par-mums') }}">{{ __('About us') }}</a>
                 <a href="{{ url('/#kontakti') }}">{{ __('Contacts') }}</a>
                 @if (auth()->user()?->role === 'admin')
-                    <a href="{{ route('admin.dashboard') }}">{{ __('Admin panel') }}</a>
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true">{{ __('Admin panel') }}</button>
+                        <div class="nav-dropdown-menu">
+                            <a href="{{ route('admin.dashboard') }}">{{ __('Reservation calendar') }}</a>
+                            <a href="{{ route('admin.applications') }}">{{ __('Applications inbox') }}</a>
+                            <a href="{{ route('admin.portfolio') }}">{{ __('Portfolio') }}</a>
+                        </div>
+                    </div>
                 @else
                     <a href="{{ route('calc') }}">{{ __('Calculator') }}</a>
                     @auth
-                        <a href="{{ route('form') }}">{{ __('Create an application') }}</a>
+                        <div class="nav-dropdown">
+                            <button class="nav-dropdown-trigger" type="button" aria-haspopup="true">{{ __('Applications') }}</button>
+                            <div class="nav-dropdown-menu">
+                                <a href="{{ route('form') }}">{{ __('Create an application') }}</a>
+                                <a href="{{ route('applications') }}">{{ __('My applications') }}</a>
+                                <a href="{{ route('calendar') }}">{{ __('Reservation calendar') }}</a>
+                            </div>
+                        </div>
                     @endauth
                 @endif
             </div>

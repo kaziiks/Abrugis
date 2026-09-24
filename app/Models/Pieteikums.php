@@ -10,6 +10,10 @@ class Pieteikums extends Model
 {
     protected $table = 'pieteikums';
 
+    protected $casts = [
+        'requested_date' => 'date',
+    ];
+
     protected $fillable = [
         'user_id',
         'bruga_veids_id',
@@ -18,6 +22,7 @@ class Pieteikums extends Model
         'client_phone',
         'project_description',
         'area_m2',
+        'requested_date',
         'status',
         'admin_notes',
     ];

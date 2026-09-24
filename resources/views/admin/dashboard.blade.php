@@ -20,6 +20,55 @@
             </ul>
         @endif
 
+        @if ($adminSection === 'calendar')
+        <section class="admin-section calendar-section">
+            <div class="admin-section-heading">
+                <div>
+                    <p class="eyebrow">{{ __('Planning') }}</p>
+                    <h2>{{ __('Reservation calendar') }}</h2>
+                </div>
+                <div class="calendar-legend" aria-label="{{ __('Reservation statuses') }}">
+                    <span><i class="calendar-dot calendar-dot-new"></i>{{ __('New') }}</span>
+                    <span><i class="calendar-dot calendar-dot-approved"></i>{{ __('Approved') }}</span>
+                    <span><i class="calendar-dot calendar-dot-completed"></i>{{ __('Completed') }}</span>
+                </div>
+            </div>
+
+            <div class="admin-calendar">
+                <div class="calendar-toolbar">
+                    <a class="calendar-nav" href="{{ route('admin.dashboard', ['calendar_month' => $calendarMonth->copy()->subMonth()->format('Y-m')]) }}" aria-label="{{ __('Previous month') }}">&larr;</a>
+                    <h3>{{ $calendarMonth->translatedFormat('F Y') }}</h3>
+                    <a class="calendar-nav" href="{{ route('admin.dashboard', ['calendar_month' => $calendarMonth->copy()->addMonth()->format('Y-m')]) }}" aria-label="{{ __('Next month') }}">&rarr;</a>
+                </div>
+                <div class="calendar-grid calendar-weekdays">
+                    @foreach ([__('Mon'), __('Tue'), __('Wed'), __('Thu'), __('Fri'), __('Sat'), __('Sun')] as $weekday)
+                        <span>{{ $weekday }}</span>
+                    @endforeach
+                </div>
+                <div class="calendar-grid calendar-days">
+                    @for ($blank = 1; $blank < $calendarMonth->dayOfWeekIso; $blank++)
+                        <span class="calendar-day calendar-day-empty"></span>
+                    @endfor
+                    @for ($day = 1; $day <= $calendarMonth->daysInMonth; $day++)
+                        @php
+                            $dateKey = $calendarMonth->copy()->day($day)->format('Y-m-d');
+                            $dayApplications = $calendarApplications->get($dateKey, collect());
+                        @endphp
+                        <div class="calendar-day {{ $dayApplications->isNotEmpty() ? 'calendar-day-booked' : '' }}">
+                            <strong>{{ $day }}</strong>
+                            @foreach ($dayApplications as $application)
+                                <a class="calendar-event status-{{ $application->status }}" href="#application-{{ $application->id }}">
+                                    {{ $application->client_name }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @endfor
+                </div>
+            </div>
+        </section>
+        @endif
+
+        @if ($adminSection === 'applications')
         <section class="admin-section">
             <div class="admin-section-heading">
                 <div>
@@ -31,7 +80,7 @@
 
             <div class="admin-inbox">
                 @forelse ($pieteikumi as $pieteikums)
-                    <form class="admin-inbox-item" method="POST" action="{{ route('admin.pieteikumi.update', $pieteikums) }}">
+                    <form id="application-{{ $pieteikums->id }}" class="admin-inbox-item" method="POST" action="{{ route('admin.pieteikumi.update', $pieteikums) }}">
                         @csrf
                         @method('PATCH')
                         <div class="inbox-meta">
@@ -40,6 +89,9 @@
                         </div>
                         <p><a href="mailto:{{ $pieteikums->client_email }}">{{ $pieteikums->client_email }}</a> · {{ $pieteikums->client_phone }}</p>
                         <p>{{ $pieteikums->pavingType?->name ?? __('Paving type not specified') }} · {{ $pieteikums->area_m2 ?? '–' }} m²</p>
+                        @if ($pieteikums->requested_date)
+                            <p class="inbox-requested-date">{{ __('Preferred date') }}: {{ $pieteikums->requested_date->format('d.m.Y') }}</p>
+                        @endif
                         <p class="inbox-description">{{ $pieteikums->project_description }}</p>
                         <div class="inbox-actions">
                             <select name="status" aria-label="{{ __('Application status') }}">
@@ -55,7 +107,9 @@
                 @endforelse
             </div>
         </section>
+        @endif
 
+        @if ($adminSection === 'portfolio')
         <section class="admin-section admin-portfolio-section">
             <div class="admin-section-heading">
                 <div>
@@ -89,8 +143,13 @@
                 <button class="admin-button" type="submit">{{ __('Add project') }}</button>
             </form>
 
-            <div class="admin-items">
-                @forelse ($portfolio as $project)
+            <details class="portfolio-projects" @if ($errors->any()) open @endif>
+                <summary class="portfolio-projects-toggle">
+                    <span>{{ __('Show portfolio projects') }}</span>
+                    <span class="admin-count">{{ $portfolio->count() }}</span>
+                </summary>
+                <div class="admin-items">
+                    @forelse ($portfolio as $project)
                     <form class="admin-item admin-edit-form" method="POST" action="{{ route('admin.portfolio.update', $project) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -129,20 +188,22 @@
                             <button class="admin-delete" type="submit" form="delete-portfolio-{{ $project->id }}">{{ __('Delete') }}</button>
                         </div>
                     </form>
-                    @foreach ($project->bildes as $bilde)
-                        <form id="delete-portfolio-image-{{ $bilde->id }}" method="POST" action="{{ route('admin.portfolio.bildes.destroy', $bilde) }}">
+                        @foreach ($project->bildes as $bilde)
+                            <form id="delete-portfolio-image-{{ $bilde->id }}" method="POST" action="{{ route('admin.portfolio.bildes.destroy', $bilde) }}">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        @endforeach
+                        <form id="delete-portfolio-{{ $project->id }}" method="POST" action="{{ route('admin.portfolio.destroy', $project) }}">
                             @csrf
                             @method('DELETE')
                         </form>
-                    @endforeach
-                    <form id="delete-portfolio-{{ $project->id }}" method="POST" action="{{ route('admin.portfolio.destroy', $project) }}">
-                        @csrf
-                        @method('DELETE')
-                    </form>
-                @empty
-                    <p>{{ __('There are no portfolio projects yet.') }}</p>
-                @endforelse
-            </div>
+                    @empty
+                        <p>{{ __('There are no portfolio projects yet.') }}</p>
+                    @endforelse
+                </div>
+            </details>
         </section>
+        @endif
     </main>
 </x-layout>

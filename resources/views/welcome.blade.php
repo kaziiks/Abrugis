@@ -6,7 +6,7 @@
 				<h1>Aigara<br><em>Bruģēšanas darbi</em></h1>
 				<p class="lead">{{ __('Paving solutions for yards, terraces and driveways. From the first sketch to the last stone.') }}</p>
 				<div class="hero-actions">
-					<a href="{{ route('form') }}" class="primary-btn">{{ __('Contact') }}</a>
+					<a href="{{ route('form') }}" class="primary-btn">{{ __('Create an application') }}</a>
 					<a href="#darbi" class="secondary-btn">{{ __('Portfolio') }}</a>
 					<a href="#atsauksmes" class="secondary-btn">{{ __('Reviews') }}</a>
 				</div>
@@ -32,13 +32,6 @@
 				<noscript><button class="secondary-btn" type="submit">{{ __('Filter') }}</button></noscript>
 			</form>
 			<div class="projects">
-				@php
-					$fallbackImages = [
-						'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=900&q=80',
-						'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=900&q=80',
-						'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80',
-					];
-				@endphp
 				@forelse ($portfolio as $index => $project)
 					<article class="project">
 						<div class="project-image">
@@ -70,8 +63,15 @@
 		</section>
 
 		<section class="section" id="kontakti">
-			<a href="{{ route('form') }}">{{ __('Contact us') }}</a>
-			<a href="mailto:abrugis@gmail.com">abrugis@gmail.com</a>
+			<div class="contact-copy">
+				<p class="eyebrow">{{ __('Contact us') }}</p>
+				<h2>{{ __('Ready to start?') }}</h2>
+				<p>{{ __('Tell us about your yard and we will help plan the next step.') }}</p>
+			</div>
+			<div class="contact-actions">
+				<a href="{{ route('form') }}" class="primary-btn">{{ __('Create an application') }}</a>
+				<a href="mailto:abrugis@gmail.com" class="contact-email">abrugis@gmail.com</a>
+			</div>
 		</section>
 	</main>
 	<footer class="footer"><span>ABRUGIS © {{ date('Y') }}</span><span>{{ __('Paving with purpose.') }}</span></footer>

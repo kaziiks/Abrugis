@@ -51,6 +51,11 @@ class AdminApplicationsTest extends TestCase
         $this->actingAs($admin)
             ->get('/admin')
             ->assertOk()
+            ->assertSee(__('Reservation calendar'));
+
+        $this->actingAs($admin)
+            ->get(route('admin.applications'))
+            ->assertOk()
             ->assertSee('Pieteikumu inbox')
             ->assertSee('Anna Pirma')
             ->assertSee('Jānis Otrais');

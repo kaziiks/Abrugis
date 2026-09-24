@@ -81,6 +81,14 @@ header {
 }
 .nav-links a:hover, .auth-links a:hover { color: var(--accent); }
 .auth-links button { padding: 9px 15px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-trigger { padding: 0; border: 0; color: var(--ink-soft); background: transparent; font: inherit; font-size: .88rem; cursor: default; }
+.nav-dropdown-trigger::after { display: inline-block; margin-left: 6px; content: '\25BE'; color: var(--muted); font-size: .7em; }
+.nav-dropdown:hover .nav-dropdown-trigger, .nav-dropdown:focus-within .nav-dropdown-trigger { color: var(--accent); }
+.nav-dropdown-menu { position: absolute; top: 100%; left: -14px; z-index: 25; display: none; min-width: 190px; padding: 12px 8px 8px; border: 1px solid var(--line); border-radius: 0 0 8px 8px; background: var(--surface); box-shadow: var(--shadow); }
+.nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown:focus-within .nav-dropdown-menu { display: grid; }
+.nav-dropdown-menu a { padding: 9px 10px; color: var(--ink-soft); font-size: .84rem; text-decoration: none; white-space: nowrap; }
+.nav-dropdown-menu a:hover { color: var(--accent); background: var(--mist); }
 
 main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 54px 0 90px; }
 .site-shell main { padding-top: 42px; }
@@ -168,8 +176,11 @@ main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 54px 0 90
 .testimonial strong { font-size: .86rem; }
 .testimonial-rating { color: var(--accent); letter-spacing: .1em; }
 .testimonial-rating span { color: var(--sage); }
-#kontakti { display: flex; justify-content: space-between; gap: 18px; margin-top: 72px; padding: 28px 0; border-top: 1px solid var(--line); }
-#kontakti a { color: var(--sage-dark); font-weight: 700; text-decoration: none; }
+#kontakti { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-top: 72px; padding: 34px 0; border-top: 1px solid var(--line); }
+#kontakti h2 { margin: 0; color: var(--ink); font: 400 clamp(1.8rem, 4vw, 2.8rem)/1.15 'Libre Baskerville', Georgia, serif; }
+.contact-copy > p:last-child { max-width: 520px; margin: 12px 0 0; color: var(--ink-soft); }
+.contact-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.contact-email { color: var(--sage-dark); font-weight: 700; text-decoration: none; }
 .footer { display: flex; justify-content: space-between; gap: 18px; width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 24px 0 42px; border-top: 1px solid var(--line); color: var(--muted); font-size: .78rem; }
 
 .auth-shell { display: grid; place-items: center; min-height: 68vh; }
@@ -237,6 +248,13 @@ main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 54px 0 90
 .admin-home-link { color: var(--sage-dark); font-size: .88rem; font-weight: 700; text-decoration: none; }
 .admin-section { margin-top: 48px; }
 .admin-inbox, .admin-items { display: grid; gap: 14px; }
+.portfolio-projects { margin-top: 24px; }
+.portfolio-projects-toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 18px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: rgba(255,255,255,.7); font-size: .9rem; font-weight: 700; cursor: pointer; list-style: none; }
+.portfolio-projects-toggle::-webkit-details-marker { display: none; }
+.portfolio-projects-toggle::after { order: 2; color: var(--accent); content: '+'; font-size: 1.25rem; font-weight: 400; line-height: 1; }
+.portfolio-projects[open] .portfolio-projects-toggle { margin-bottom: 14px; }
+.portfolio-projects[open] .portfolio-projects-toggle::after { content: '\2212'; }
+.portfolio-projects-toggle:hover { border-color: var(--accent); background: var(--surface); }
 .admin-inbox-item, .admin-item { padding: 22px; }
 .inbox-meta, .admin-item-heading { display: flex; justify-content: space-between; gap: 15px; }
 .inbox-meta span, .admin-item-city { color: var(--muted); font-size: .8rem; }
@@ -260,12 +278,44 @@ main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 54px 0 90
 .admin-delete { min-height: 42px; padding: 10px 16px; border: 1px solid #e2b5a2; border-radius: 7px; color: #94513a; background: transparent; font: inherit; font-weight: 700; cursor: pointer; }
 .admin-errors { padding-left: 28px; color: #94513a; }
 .admin-success { padding: 13px 15px; border-radius: 8px; color: #356351; background: #e4f2e9; font-weight: 600; }
+.calendar-legend { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: .76rem; font-weight: 700; }
+.calendar-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.calendar-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.calendar-dot-new { background: #c27b5b; }
+.calendar-dot-approved { background: #59796e; }
+.calendar-dot-completed { background: #7896a3; }
+.admin-calendar { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.78); box-shadow: var(--shadow); }
+.calendar-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+.calendar-toolbar h3 { margin: 0; color: var(--ink); font: 400 1.25rem 'Libre Baskerville', Georgia, serif; text-transform: capitalize; }
+.calendar-nav { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); text-decoration: none; }
+.calendar-nav:hover { border-color: var(--accent); color: var(--accent); }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.calendar-weekdays { padding: 12px 14px 0; color: var(--muted); font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-align: right; text-transform: uppercase; }
+.calendar-days { gap: 1px; padding: 10px 14px 14px; background: var(--line); }
+.calendar-day { min-height: 104px; padding: 9px; background: var(--surface); }
+.calendar-day strong { display: block; color: var(--ink-soft); font-size: .82rem; text-align: right; }
+.calendar-day-empty { background: rgba(255,255,255,.4); }
+.calendar-event { display: block; overflow: hidden; margin-top: 8px; padding: 5px 7px; border-left: 3px solid var(--muted); color: var(--ink); background: var(--mist); font-size: .72rem; font-weight: 700; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
+.calendar-event.status-new { border-color: #c27b5b; background: #f8ebe4; }
+.calendar-event.status-contacted, .calendar-event.status-approved { border-color: #59796e; background: #e7efeb; }
+.calendar-event.status-completed { border-color: #7896a3; background: #e8eff2; }
+.inbox-requested-date { color: var(--sage-dark) !important; font-weight: 700; }
+.client-calendar-page { padding-top: 38px; }
+.client-calendar-intro { max-width: 620px; margin-bottom: 32px; }
+.client-calendar-intro h1 { margin: 0; color: var(--ink); font: 400 clamp(2rem, 4vw, 3.5rem) 'Libre Baskerville', Georgia, serif; }
+.client-calendar-intro p:not(.eyebrow) { margin: 14px 0 0; color: var(--ink-soft); }
+.client-calendar-note { display: flex; align-items: center; gap: 8px; margin-top: 20px; color: var(--ink-soft); font-size: .85rem; }
+.client-calendar-note .calendar-dot { background: var(--accent); }
+.calendar-day-occupied { background: #f8ebe4; }
+.calendar-day-occupied strong { color: #94513a; }
+.calendar-occupied-label { display: block; margin-top: 10px; color: #94513a; font-size: .68rem; font-weight: 700; text-transform: uppercase; }
 
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 900px) {
     .nav { flex-wrap: wrap; padding: 16px 0; }
     .nav-links { order: 3; width: 100%; justify-content: space-between; gap: 10px; }
+    .nav-dropdown-menu { left: auto; right: 0; }
     .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 24px; }
     .hero-image { min-height: 300px; border-radius: 150px 150px 14px 14px; }
     .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -279,13 +329,24 @@ main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 54px 0 90
     .nav-links { font-size: .8rem; }
     .auth-links { margin-left: auto; }
     .hero h1, .calculator-intro h1 { font-size: clamp(2.55rem, 12vw, 4rem); }
+    .hero-actions { display: grid; grid-template-columns: 1fr; }
+    .hero-actions a, .contact-actions .primary-btn { width: 100%; }
     .hero-image { min-height: 260px; }
     .projects, .form-grid, .admin-form-grid { grid-template-columns: 1fr; }
     .testimonial-grid { grid-template-columns: 1fr; }
     .portfolio-filter { align-items: flex-start; flex-direction: column; }
     .section-title, .admin-heading, .admin-section-heading, #kontakti, .footer { align-items: flex-start; flex-direction: column; }
+    #kontakti { gap: 22px; margin-top: 52px; }
+    .contact-actions { align-items: stretch; width: 100%; flex-direction: column; }
+    .contact-email { padding: 8px 0; }
     .section-title h2, .admin-heading h1, .admin-section-heading h2 { font-size: 2rem; }
     .auth-card, .form-shell, .calculator-form, .admin-form, .admin-item { padding: 22px; }
     .inbox-actions, .admin-item-actions { align-items: stretch; flex-direction: column; }
     .inbox-actions .admin-button, .admin-item-actions .admin-button, .admin-delete { width: 100%; }
+    .calendar-days { padding: 6px; }
+    .calendar-day { min-height: 76px; padding: 6px; }
+    .calendar-event { margin-top: 5px; padding: 4px; font-size: .65rem; }
+    .application-item-heading { flex-direction: column; gap: 10px; }
+    .status-badge { align-self: flex-start; }
+    .application-form button, .auth-form button { width: 100%; }
 }

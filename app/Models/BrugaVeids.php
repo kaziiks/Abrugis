@@ -9,6 +9,13 @@ class BrugaVeids extends Model
 {
     protected $table = 'bruga_veids';
 
+    protected $fillable = [
+        'name',
+        'price_per_m2',
+        'description',
+        'image',
+    ];
+
     public function pieteikumi(): HasMany
     {
         return $this->hasMany(Pieteikums::class, 'bruga_veids_id');
