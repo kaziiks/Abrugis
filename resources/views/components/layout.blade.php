@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Abrugis' }}</title>
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+    <script src="{{ asset('js/compare.js') }}" defer></script>
 </head>
 <body class="{{ $bodyClass ?? '' }}">
     <header>

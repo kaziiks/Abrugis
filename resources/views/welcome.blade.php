@@ -45,6 +45,48 @@
 			</div>
 		</section>
 
+		<section class="section compare-section" id="compare">
+			<div class="section-title">
+				<div><p class="eyebrow">Demo visualizer</p><h2>Pirms / Pēc</h2></div>
+			</div>
+
+			<div class="compare-toolbar">
+				<div class="compare-select-wrap">
+					<label for="compare-project">Objekts</label>
+					<select id="compare-project" aria-label="Izvēlies projektu">
+						<option value="aizkraukle">Aizkraukles objekts</option>
+						<option value="cesu">Cēsu privātmāja</option>
+						<option value="valmiera">Valmieras stāvvieta</option>
+					</select>
+				</div>
+
+				<div class="compare-filters" aria-label="Bruģa tips">
+					<button class="compare-filter is-active" type="button" data-filter="all">Visi</button>
+					<button class="compare-filter" type="button" data-filter="betons">Betons</button>
+					<button class="compare-filter" type="button" data-filter="klinkers">Klinkers</button>
+					<button class="compare-filter" type="button" data-filter="granits">Granīts</button>
+				</div>
+			</div>
+
+			<div class="compare-card" id="compare-card">
+				<div class="compare-layer compare-layer-before">
+					<img id="compare-before" src="{{ asset('storage/portfolio/brugis1.jpg') }}" alt="Pirms attēls" draggable="false">
+					<span class="compare-label compare-label-before">Pirms</span>
+				</div>
+
+				<div class="compare-layer compare-layer-after" id="compare-after-layer">
+					<img id="compare-after" src="{{ asset('storage/portfolio/brugis2.jpg') }}" alt="Pēc attēls" draggable="false">
+					<span class="compare-label compare-label-after">Pēc</span>
+				</div>
+
+				<div class="compare-divider" id="compare-divider" aria-hidden="true">
+					<span></span>
+				</div>
+
+				<input id="compare-range" type="range" min="0" max="100" value="48" aria-label="Pārslēgt pirms/pēc skatu">
+			</div>
+		</section>
+
 		<section class="section testimonials" id="atsauksmes">
 			<div class="section-title">
 				<div><p class="eyebrow">{{ __('Customer experience') }}</p><h2>{{ __('Reviews') }}</h2></div>

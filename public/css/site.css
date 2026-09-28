@@ -170,6 +170,128 @@ main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 54px 0 90
 .project p { margin-top: 0; color: var(--ink-soft); font-size: .88rem; }
 .project p:last-child { margin-bottom: 22px; }
 .empty-state { grid-column: 1 / -1; padding: 28px; border: 1px dashed var(--sage); border-radius: 10px; color: var(--ink-soft); }
+
+.compare-section { margin-top: 36px; }
+.compare-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 20px; }
+.compare-select-wrap { display: grid; gap: 8px; }
+.compare-select-wrap label { color: var(--ink-soft); font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.compare-select-wrap select { min-width: 220px; min-height: 46px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); font: inherit; }
+.compare-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.compare-filter { border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.6); color: var(--ink-soft); font: inherit; font-size: .82rem; font-weight: 700; padding: 9px 13px; cursor: pointer; transition: all .2s ease; }
+.compare-filter.is-active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.compare-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: #dfe8e3;
+    box-shadow: var(--shadow);
+    aspect-ratio: 16 / 9;
+    --compare-position: 48%;
+}
+.compare-layer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #dfe8e3;
+}
+.compare-layer img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+    draggable: false;
+}
+.compare-layer-before {
+    width: 100%;
+}
+.compare-layer-before img {
+    filter: saturate(0.7) contrast(0.96);
+}
+.compare-layer-after {
+    width: var(--compare-position, 48%);
+    border-right: 3px solid rgba(255,255,255,.9);
+    box-shadow: 8px 0 20px rgba(0,0,0,.08);
+    transition: width .12s ease;
+}
+.compare-divider {
+    position: absolute;
+    left: var(--compare-position, 48%);
+    top: 0;
+    width: 0;
+    height: 100%;
+    border-left: 3px solid rgba(255,255,255,.9);
+    z-index: 3;
+    transition: left .12s ease;
+}
+.compare-divider span {
+    position: absolute;
+    left: 50%;
+    top: 18px;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.95);
+    box-shadow: 0 0 0 4px rgba(32,52,49,.18);
+}
+.compare-divider span::before,
+.compare-divider span::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 2px;
+    background: var(--ink);
+    border-radius: 999px;
+}
+.compare-divider span::before { transform: translateX(-4px); }
+.compare-divider span::after { transform: translateX(4px); }
+.compare-label {
+    position: absolute;
+    left: 18px;
+    bottom: 18px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(20, 31, 29, 0.72);
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+.compare-label-after { left: auto; right: 18px; }
+#compare-range {
+    position: absolute;
+    inset: auto 0 18px 0;
+    width: calc(100% - 32px);
+    margin: 0 auto;
+    z-index: 4;
+    accent-color: var(--ink);
+    opacity: 0;
+    pointer-events: none;
+}
+.compare-card {
+    cursor: ew-resize;
+    touch-action: none;
+    user-select: none;
+}
+
+.compare-divider {
+    cursor: ew-resize;
+    pointer-events: auto;
+}
 .testimonial-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .testimonial { padding: 24px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.7); }
 .testimonial p { min-height: 78px; margin: 18px 0; color: var(--ink-soft); font-family: 'Libre Baskerville', Georgia, serif; font-size: .95rem; line-height: 1.75; }
