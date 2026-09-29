@@ -8,6 +8,7 @@ use App\Models\Pieteikums;
 use App\Models\PortfolioBilde;
 use App\Models\PortfolioInfo;
 use App\Models\User;
+use Database\Seeders\BrugaVeidsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
@@ -44,6 +45,24 @@ class BusinessRulesTest extends TestCase
 
         $this->assertFalse(Storage::disk('public')->exists($portfolioImage->image_path));
         $this->assertDatabaseMissing('portfolio_bilde', ['id' => $portfolioImage->id]);
+    }
+
+    public function test_bruga_veidi_seeder_is_idempotent_and_refreshes_seed_data(): void
+    {
+        $this->seed(BrugaVeidsSeeder::class);
+        BrugaVeids::where('name', 'Betona bruģis')->update(['price_per_m2' => 99.00]);
+
+        $this->seed(BrugaVeidsSeeder::class);
+
+        $this->assertDatabaseCount('bruga_veids', 3);
+        $this->assertDatabaseHas('bruga_veids', [
+            'name' => 'Betona bruģis',
+            'price_per_m2' => 25.00,
+        ]);
+        $this->assertDatabaseHas('bruga_veids', [
+            'name' => 'Klinkera bruģis',
+            'price_per_m2' => 35.00,
+        ]);
     }
 
     public function test_user_can_see_only_their_own_applications(): void
