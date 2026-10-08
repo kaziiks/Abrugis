@@ -5,21 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Abrugis' }}</title>
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+    @vite('resources/js/app.js')
     <script src="{{ asset('js/compare.js') }}" defer></script>
+    <script src="{{ asset('js/area-calculator.js') }}" defer></script>
 </head>
 <body class="{{ $bodyClass ?? '' }}">
     <header>
         <nav class="nav" aria-label="{{ __('Main navigation') }}">
             <a class="logo" href="{{ url('/') }}">ABRUGIS</a>
             <div class="nav-links">
-                <a href="{{ url('/#darbi') }}">{{ __('Works') }}</a>
-                <a href="{{ url('/#par-mums') }}">{{ __('About us') }}</a>
-                <a href="{{ url('/#kontakti') }}">{{ __('Contacts') }}</a>
+                <a href="{{ url('/#projects') }}">{{ __('Works') }}</a>
+                <a href="{{ url('/#about') }}">{{ __('About us') }}</a>
+                <a href="{{ url('/#how-we-work') }}">{{ __('How we work') }}</a>
+                <a href="{{ url('/#contact') }}">{{ __('Contacts') }}</a>
                 @if (auth()->user()?->role === 'admin')
                     <div class="nav-dropdown">
                         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true">{{ __('Admin panel') }}</button>
                         <div class="nav-dropdown-menu">
-                            <a href="{{ route('admin.dashboard') }}">{{ __('Reservation calendar') }}</a>
+                            <a href="{{ route('admin.dashboard') }}">{{ __('Consultation calendar') }}</a>
                             <a href="{{ route('admin.applications') }}">{{ __('Applications inbox') }}</a>
                             <a href="{{ route('admin.portfolio') }}">{{ __('Portfolio') }}</a>
                         </div>
@@ -32,7 +35,7 @@
                             <div class="nav-dropdown-menu">
                                 <a href="{{ route('form') }}">{{ __('Create an application') }}</a>
                                 <a href="{{ route('applications') }}">{{ __('My applications') }}</a>
-                                <a href="{{ route('calendar') }}">{{ __('Reservation calendar') }}</a>
+                                <a href="{{ route('calendar') }}">{{ __('Consultation calendar') }}</a>
                             </div>
                         </div>
                     @endauth

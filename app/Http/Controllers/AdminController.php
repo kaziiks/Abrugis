@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BrugaVeids;
-use App\Models\Pieteikums;
-use App\Models\PortfolioBilde;
+use App\Models\Application;
+use App\Models\PavingType;
+use App\Models\PortfolioImage;
 use App\Models\PortfolioInfo;
+use App\Services\ApplicationReservationService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use RuntimeException;
+use Throwable;
 
 class AdminController extends Controller
 {
@@ -24,13 +29,13 @@ class AdminController extends Controller
         }
 
         $calendarMonth->startOfMonth();
-        $calendarApplications = Pieteikums::with('pavingType')
+        $calendarApplications = Application::with('pavingType')
             ->whereNotNull('requested_date')
             ->where('status', '!=', 'rejected')
             ->whereBetween('requested_date', [$calendarMonth->copy()->startOfMonth(), $calendarMonth->copy()->endOfMonth()])
             ->orderBy('requested_date')
             ->get()
-            ->groupBy(fn (Pieteikums $pieteikums): string => $pieteikums->requested_date->format('Y-m-d'));
+            ->groupBy(fn (Application $application): string => $application->requested_date->format('Y-m-d'));
 
         return view('admin.dashboard', [
             'adminSection' => 'calendar',
@@ -39,11 +44,22 @@ class AdminController extends Controller
         ]);
     }
 
-    public function applications(): View
+    public function applications(Request $request): View
     {
+        $requestedDate = $request->validate([
+            'requested_date' => ['sometimes', 'date_format:Y-m-d'],
+        ])['requested_date'] ?? null;
+
+        $applications = Application::with(['user', 'pavingType'])->latest();
+
+        if ($requestedDate) {
+            $applications->whereDate('requested_date', $requestedDate);
+        }
+
         return view('admin.dashboard', [
             'adminSection' => 'applications',
-            'pieteikumi' => Pieteikums::with(['user', 'pavingType'])->latest()->get(),
+            'applications' => $applications->get(),
+            'requestedDate' => $requestedDate,
         ]);
     }
 
@@ -51,8 +67,8 @@ class AdminController extends Controller
     {
         return view('admin.dashboard', [
             'adminSection' => 'portfolio',
-            'portfolio' => PortfolioInfo::with(['user', 'brugaVeids', 'bildes'])->latest()->get(),
-            'brugaVeidi' => BrugaVeids::orderBy('name')->get(),
+            'portfolio' => PortfolioInfo::with(['user', 'pavingType', 'images'])->latest()->get(),
+            'pavingTypes' => PavingType::orderBy('name')->get(),
         ]);
     }
 
@@ -61,24 +77,41 @@ class AdminController extends Controller
         $validated = $this->validatePortfolio($request);
         $validated['user_id'] = Auth::id();
 
-        $portfolio = PortfolioInfo::create($validated);
-        $this->storePortfolioImages($request, $portfolio);
+        $storedPaths = [];
+        try {
+            DB::transaction(function () use ($request, $validated, &$storedPaths): void {
+                $portfolio = PortfolioInfo::create($validated);
+                $storedPaths = $this->storePortfolioImages($request, $portfolio);
+            });
+        } catch (Throwable $exception) {
+            $this->deleteStoredImages($storedPaths);
+            throw $exception;
+        }
 
         return back()->with('success', 'Portfolio projekts pievienots.');
     }
 
     public function updatePortfolio(Request $request, PortfolioInfo $portfolio): RedirectResponse
     {
-        $portfolio->update($this->validatePortfolio($request));
-        $this->storePortfolioImages($request, $portfolio);
+        $validated = $this->validatePortfolio($request);
+        $storedPaths = [];
+        try {
+            DB::transaction(function () use ($request, $portfolio, $validated, &$storedPaths): void {
+                $portfolio->update($validated);
+                $storedPaths = $this->storePortfolioImages($request, $portfolio);
+            });
+        } catch (Throwable $exception) {
+            $this->deleteStoredImages($storedPaths);
+            throw $exception;
+        }
 
         return back()->with('success', 'Portfolio projekts atjaunināts.');
     }
 
     public function destroyPortfolio(PortfolioInfo $portfolio): RedirectResponse
     {
-        foreach ($portfolio->bildes as $bildes) {
-            Storage::disk('public')->delete($bildes->image_path);
+        foreach ($portfolio->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
         }
 
         $portfolio->delete();
@@ -86,15 +119,15 @@ class AdminController extends Controller
         return back()->with('success', 'Portfolio projekts izdzēsts.');
     }
 
-    public function destroyPortfolioBilde(PortfolioBilde $bilde): RedirectResponse
+    public function destroyPortfolioImage(PortfolioImage $image): RedirectResponse
     {
-        Storage::disk('public')->delete($bilde->image_path);
-        $bilde->delete();
+        Storage::disk('public')->delete($image->image_path);
+        $image->delete();
 
         return back()->with('success', 'Portfolio bilde izdzēsta.');
     }
 
-    public function updatePieteikums(Request $request, Pieteikums $pieteikums): RedirectResponse
+    public function updateApplication(Request $request, Application $application, ApplicationReservationService $reservations): RedirectResponse
     {
         $validated = $request->validate([
             'status' => ['required', 'string', 'in:new,contacted,approved,completed,rejected'],
@@ -103,7 +136,7 @@ class AdminController extends Controller
             'status.in' => 'Statuss nav derīgs.',
         ]);
 
-        $pieteikums->update($validated);
+        $reservations->updateStatus($application, $validated['status']);
 
         return back()->with('success', 'Pieteikums atjaunināts.');
     }
@@ -111,7 +144,7 @@ class AdminController extends Controller
     private function validatePortfolio(Request $request): array
     {
         return $request->validate([
-            'bruga_veids_id' => ['required', 'exists:bruga_veids,id'],
+            'paving_type_id' => ['required', 'exists:paving_types,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
             'city' => ['required', 'string', 'max:255'],
@@ -120,17 +153,41 @@ class AdminController extends Controller
             'images' => ['nullable', 'array', 'max:10'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ], [
-            'bruga_veids_id.required' => 'Lūdzu, izvēlieties bruģa veidu.',
+            'paving_type_id.required' => 'Lūdzu, izvēlieties bruģa veidu.',
             'title.required' => 'Lūdzu, ievadiet projekta nosaukumu.',
             'city.required' => 'Lūdzu, ievadiet pilsētu.',
         ]);
     }
 
-    private function storePortfolioImages(Request $request, PortfolioInfo $portfolio): void
+    private function storePortfolioImages(Request $request, PortfolioInfo $portfolio): array
     {
-        foreach ($request->file('images', []) as $image) {
-            $portfolio->bildes()->create([
-                'image_path' => $image->store('portfolio', 'public'),
+        $paths = [];
+        try {
+            foreach ($request->file('images', []) as $image) {
+                $path = $image->store('portfolio', 'public');
+                if ($path === false) {
+                    throw new RuntimeException('Portfolio image could not be stored.');
+                }
+
+                $paths[] = $path;
+            }
+
+            foreach ($paths as $path) {
+                $portfolio->images()->create(['image_path' => $path]);
+            }
+        } catch (Throwable $exception) {
+            $this->deleteStoredImages($paths);
+            throw $exception;
+        }
+
+        return $paths;
+    }
+
+    private function deleteStoredImages(array $paths): void
+    {
+        if ($paths !== [] && ! Storage::disk('public')->delete($paths)) {
+            Log::error('Portfolio image cleanup failed after an unsuccessful operation.', [
+                'image_paths' => $paths,
             ]);
         }
     }

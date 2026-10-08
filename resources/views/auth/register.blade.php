@@ -12,6 +12,9 @@
                         @endforeach
                     </ul>
                 @endif
+                @if (session('status'))
+                    <p class="success-note" role="status">{{ session('status') }}</p>
+                @endif
 
                 <form method="POST" action="{{ route('register') }}" class="auth-form">
                     @csrf

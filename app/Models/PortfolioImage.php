@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PortfolioBilde extends Model
+class PortfolioImage extends Model
 {
-    protected $table = 'portfolio_bilde';
+    protected $table = 'portfolio_images';
 
     protected $fillable = [
         'portfolio_info_id',

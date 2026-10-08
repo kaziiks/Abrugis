@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminUserSeeder::class,
-            BrugaVeidsSeeder::class,
+            PavingTypeSeeder::class,
             PortfolioInfoSeeder::class,
         ]);
     }

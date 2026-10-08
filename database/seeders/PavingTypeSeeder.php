@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\BrugaVeids;
+use App\Models\PavingType;
 use Illuminate\Database\Seeder;
 
-class BrugaVeidsSeeder extends Seeder
+class PavingTypeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -31,7 +31,7 @@ class BrugaVeidsSeeder extends Seeder
         ];
 
         foreach ($types as $type) {
-            BrugaVeids::updateOrCreate(
+            PavingType::updateOrCreate(
                 ['name' => $type['name']],
                 [
                     'price_per_m2' => $type['price_per_m2'],

@@ -1,10 +1,10 @@
-<x-layout title="{{ __('Reservation calendar') }} | Abrugis">
+<x-layout title="{{ __('Consultation calendar') }} | Abrugis">
     <main class="client-calendar-page">
         <div class="client-calendar-intro">
             <p class="eyebrow">{{ __('Planning') }}</p>
-            <h1>{{ __('Reservation calendar') }}</h1>
-            <p>{{ __('See which dates are already reserved before choosing a preferred work date.') }}</p>
-            <p class="client-calendar-note"><i class="calendar-dot"></i>{{ __('Occupied date') }}</p>
+            <h1>{{ __('Consultation calendar') }}</h1>
+            <p>{{ __('See which consultation dates are already confirmed before choosing a preferred consultation date.') }}</p>
+            <p class="client-calendar-note"><i class="calendar-dot"></i>{{ __('Confirmed consultation date') }}</p>
         </div>
 
         <div class="admin-calendar">
@@ -30,7 +30,7 @@
                     <div class="calendar-day {{ $isOccupied ? 'calendar-day-occupied' : '' }}">
                         <strong>{{ $day }}</strong>
                         @if ($isOccupied)
-                            <span class="calendar-occupied-label">{{ __('Occupied') }}</span>
+                            <span class="calendar-occupied-label">{{ __('Booked') }}</span>
                         @endif
                     </div>
                 @endfor

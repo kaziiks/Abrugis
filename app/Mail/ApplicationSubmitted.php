@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Pieteikums;
+use App\Models\Application;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Envelope;
 class ApplicationSubmitted extends Mailable
 {
     public function __construct(
-        public Pieteikums $pieteikums,
+        public Application $application,
         public bool $forAdmin = false,
     ) {
     }
@@ -19,7 +19,7 @@ class ApplicationSubmitted extends Mailable
     {
         return new Envelope(
             subject: $this->forAdmin
-                ? 'Jauns pieteikums no ' . $this->pieteikums->client_name
+                ? 'Jauns pieteikums no ' . $this->application->client_name
                 : 'Saņēmām jūsu pieteikumu',
         );
     }

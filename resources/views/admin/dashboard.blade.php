@@ -25,9 +25,9 @@
             <div class="admin-section-heading">
                 <div>
                     <p class="eyebrow">{{ __('Planning') }}</p>
-                    <h2>{{ __('Reservation calendar') }}</h2>
+                    <h2>{{ __('Consultation calendar') }}</h2>
                 </div>
-                <div class="calendar-legend" aria-label="{{ __('Reservation statuses') }}">
+                <div class="calendar-legend" aria-label="{{ __('Consultation statuses') }}">
                     <span><i class="calendar-dot calendar-dot-new"></i>{{ __('New') }}</span>
                     <span><i class="calendar-dot calendar-dot-approved"></i>{{ __('Approved') }}</span>
                     <span><i class="calendar-dot calendar-dot-completed"></i>{{ __('Completed') }}</span>
@@ -54,14 +54,14 @@
                             $dateKey = $calendarMonth->copy()->day($day)->format('Y-m-d');
                             $dayApplications = $calendarApplications->get($dateKey, collect());
                         @endphp
-                        <div class="calendar-day {{ $dayApplications->isNotEmpty() ? 'calendar-day-booked' : '' }}">
+                        <a class="calendar-day {{ $dayApplications->isNotEmpty() ? 'calendar-day-booked' : '' }}" href="{{ route('admin.applications', ['requested_date' => $dateKey]) }}" aria-label="{{ __('Applications on :date', ['date' => $calendarMonth->copy()->day($day)->format('d.m.Y')]) }}">
                             <strong>{{ $day }}</strong>
                             @foreach ($dayApplications as $application)
-                                <a class="calendar-event status-{{ $application->status }}" href="#application-{{ $application->id }}">
+                                <span class="calendar-event status-{{ $application->status }}">
                                     {{ $application->client_name }}
-                                </a>
+                                </span>
                             @endforeach
-                        </div>
+                        </a>
                     @endfor
                 </div>
             </div>
@@ -74,36 +74,42 @@
                 <div>
                     <p class="eyebrow">{{ __('Client messages') }}</p>
                     <h2>{{ __('Applications inbox') }}</h2>
+                    @if ($requestedDate)
+                        <p class="inbox-requested-date">{{ __('Showing applications for :date', ['date' => \Illuminate\Support\Carbon::parse($requestedDate)->format('d.m.Y')]) }} · <a href="{{ route('admin.applications') }}">{{ __('Clear date filter') }}</a></p>
+                    @endif
                 </div>
-                <span class="admin-count">{{ $pieteikumi->count() }}</span>
+                <span class="admin-count">{{ $applications->count() }}</span>
             </div>
 
             <div class="admin-inbox">
-                @forelse ($pieteikumi as $pieteikums)
-                    <form id="application-{{ $pieteikums->id }}" class="admin-inbox-item" method="POST" action="{{ route('admin.pieteikumi.update', $pieteikums) }}">
+                @forelse ($applications as $application)
+                    <form id="application-{{ $application->id }}" class="admin-inbox-item" method="POST" action="{{ route('admin.applications.update', $application) }}">
                         @csrf
                         @method('PATCH')
                         <div class="inbox-meta">
-                            <strong>{{ $pieteikums->client_name }}</strong>
-                            <span>{{ $pieteikums->created_at->format('d.m.Y H:i') }}</span>
+                            <strong>{{ $application->client_name }}</strong>
+                            <span>{{ $application->created_at->format('d.m.Y H:i') }}</span>
                         </div>
-                        <p><a href="mailto:{{ $pieteikums->client_email }}">{{ $pieteikums->client_email }}</a> · {{ $pieteikums->client_phone }}</p>
-                        <p>{{ $pieteikums->pavingType?->name ?? __('Paving type not specified') }} · {{ $pieteikums->area_m2 ?? '–' }} m²</p>
-                        @if ($pieteikums->requested_date)
-                            <p class="inbox-requested-date">{{ __('Preferred date') }}: {{ $pieteikums->requested_date->format('d.m.Y') }}</p>
+                        <p><a href="mailto:{{ $application->client_email }}">{{ $application->client_email }}</a> · {{ $application->client_phone }}</p>
+                        <p>{{ $application->pavingType?->name ?? __('Paving type not specified') }} · {{ $application->area_m2 ?? '–' }} m²</p>
+                        @if ($application->estimate_total !== null)
+                            <p>{{ __('Calculator estimate') }}: {{ number_format($application->estimate_total, 2, ',', ' ') }} €</p>
                         @endif
-                        <p class="inbox-description">{{ $pieteikums->project_description }}</p>
+                        @if ($application->requested_date)
+                            <p class="inbox-requested-date">{{ __('Consultation date') }}: {{ $application->requested_date->format('d.m.Y') }}</p>
+                        @endif
+                        <p class="inbox-description">{{ $application->project_description }}</p>
                         <div class="inbox-actions">
                             <select name="status" aria-label="{{ __('Application status') }}">
                                 @foreach (['new' => __('New'), 'contacted' => __('Contacted'), 'approved' => __('Approved'), 'completed' => __('Completed'), 'rejected' => __('Rejected')] as $value => $label)
-                                    <option value="{{ $value }}" @selected($pieteikums->status === $value)>{{ $label }}</option>
+                                    <option value="{{ $value }}" @selected($application->status === $value)>{{ $label }}</option>
                                 @endforeach
                             </select>
                             <button class="admin-button" type="submit">{{ __('Update') }}</button>
                         </div>
                     </form>
                 @empty
-                    <p>{{ __('No new applications.') }}</p>
+                    <p>{{ $requestedDate ? __('No applications for this date.') : __('No new applications.') }}</p>
                 @endforelse
             </div>
         </section>
@@ -129,10 +135,10 @@
                 <div class="admin-form-grid">
                     <label>{{ __('Title') }}<input name="title" value="{{ old('title') }}" placeholder="{{ __('For example, private house yard') }}" required></label>
                     <label>{{ __('City') }}<input name="city" value="{{ old('city') }}" placeholder="{{ __('City or municipality') }}" required></label>
-                    <label>{{ __('Paving type') }}<select name="bruga_veids_id" required>
+                    <label>{{ __('Paving type') }}<select name="paving_type_id" required>
                         <option value="">{{ __('Choose a paving type') }}</option>
-                        @foreach ($brugaVeidi as $brugaVeids)
-                            <option value="{{ $brugaVeids->id }}" @selected(old('bruga_veids_id') == $brugaVeids->id)>{{ $brugaVeids->name }}</option>
+                        @foreach ($pavingTypes as $pavingType)
+                            <option value="{{ $pavingType->id }}" @selected(old('paving_type_id') == $pavingType->id)>{{ $pavingType->name }}</option>
                         @endforeach
                     </select></label>
                     <label>{{ __('Area m²') }}<input name="area_m2" type="number" min="0" step="0.01" placeholder="0.00"></label>
@@ -163,9 +169,9 @@
                         <div class="admin-form-grid">
                             <label class="admin-edit-compact-field">{{ __('Title') }}<input name="title" value="{{ $project->title }}" required></label>
                             <label class="admin-edit-compact-field">{{ __('City') }}<input name="city" value="{{ $project->city }}" required></label>
-                            <label>{{ __('Paving type') }}<select name="bruga_veids_id" required>
-                                @foreach ($brugaVeidi as $brugaVeids)
-                                    <option value="{{ $brugaVeids->id }}" @selected($project->bruga_veids_id === $brugaVeids->id)>{{ $brugaVeids->name }}</option>
+                            <label>{{ __('Paving type') }}<select name="paving_type_id" required>
+                                @foreach ($pavingTypes as $pavingType)
+                                    <option value="{{ $pavingType->id }}" @selected($project->paving_type_id === $pavingType->id)>{{ $pavingType->name }}</option>
                                 @endforeach
                             </select></label>
                             <label>{{ __('Area m²') }}<input name="area_m2" type="number" min="0" step="0.01" value="{{ $project->area_m2 }}"></label>
@@ -173,12 +179,12 @@
                             <label class="admin-form-wide">{{ __('Description') }}<textarea name="description" rows="3">{{ $project->description }}</textarea></label>
                             <label class="admin-form-wide">{{ __('Add images') }}<input name="images[]" type="file" accept="image/jpeg,image/png,image/webp" multiple><small>{{ __('New images will be added to the existing ones.') }}</small></label>
                         </div>
-                        @if ($project->bildes->isNotEmpty())
+                        @if ($project->images->isNotEmpty())
                             <div class="admin-image-grid">
-                                @foreach ($project->bildes as $bilde)
+                                @foreach ($project->images as $image)
                                     <div class="admin-image-item">
-                                        <img src="{{ asset('storage/' . $bilde->image_path) }}" alt="{{ $project->title }}">
-                                        <button class="admin-delete" type="submit" form="delete-portfolio-image-{{ $bilde->id }}">{{ __('Delete image') }}</button>
+                                        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists($image->image_path) ? asset('storage/' . $image->image_path) : asset('images/portfolio-placeholder.svg') }}" alt="{{ $project->title }}">
+                                        <button class="admin-delete" type="submit" form="delete-portfolio-image-{{ $image->id }}">{{ __('Delete image') }}</button>
                                     </div>
                                 @endforeach
                             </div>
@@ -188,8 +194,8 @@
                             <button class="admin-delete" type="submit" form="delete-portfolio-{{ $project->id }}">{{ __('Delete') }}</button>
                         </div>
                     </form>
-                        @foreach ($project->bildes as $bilde)
-                            <form id="delete-portfolio-image-{{ $bilde->id }}" method="POST" action="{{ route('admin.portfolio.bildes.destroy', $bilde) }}">
+                        @foreach ($project->images as $image)
+                            <form id="delete-portfolio-image-{{ $image->id }}" method="POST" action="{{ route('admin.portfolio.images.destroy', $image) }}">
                                 @csrf
                                 @method('DELETE')
                             </form>

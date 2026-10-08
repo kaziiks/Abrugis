@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Atsauksme extends Model
+class Review extends Model
 {
-    protected $table = 'atsauksme';
+    protected $table = 'reviews';
 
     protected $fillable = [
-        'pieteikums_id',
+        'application_id',
         'author_name',
         'rating',
-        'atsauksme',
+        'review',
     ];
 
-    public function pieteikums(): BelongsTo
+    public function application(): BelongsTo
     {
-        return $this->belongsTo(Pieteikums::class);
+        return $this->belongsTo(Application::class);
     }
 }

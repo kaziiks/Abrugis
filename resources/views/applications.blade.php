@@ -11,7 +11,7 @@
                 <p class="success-note" role="status">{{ session('success') }}</p>
             @endif
 
-            @if ($pieteikumi->isEmpty())
+            @if ($applications->isEmpty())
                 <p class="empty-state">{{ __('No applications have been sent yet.') }}</p>
             @else
                 <div class="application-list">
@@ -24,25 +24,28 @@
                             'rejected' => __('Rejected'),
                         ];
                     @endphp
-                    @foreach ($pieteikumi as $pieteikums)
+                    @foreach ($applications as $application)
                         <article class="application-item">
                             <div class="application-item-heading">
                                 <div>
-                                    <span class="application-date">{{ $pieteikums->created_at->format('d.m.Y H:i') }}</span>
-                                    <h3>{{ $pieteikums->project_description }}</h3>
+                                    <span class="application-date">{{ $application->created_at->format('d.m.Y H:i') }}</span>
+                                    <h3>{{ $application->project_description }}</h3>
                                 </div>
-                                <span class="status-badge status-{{ $pieteikums->status }}">{{ $statusLabels[$pieteikums->status] ?? $pieteikums->status }}</span>
+                                <span class="status-badge status-{{ $application->status }}">{{ $statusLabels[$application->status] ?? $application->status }}</span>
                             </div>
                             <div class="application-meta">
-                                <span>{{ $pieteikums->pavingType?->name ?? __('Paving type not specified') }}</span>
-                                <span>{{ $pieteikums->area_m2 ? $pieteikums->area_m2 . ' m²' : __('Area not specified') }}</span>
-                                @if ($pieteikums->requested_date)
-                                    <span>{{ __('Preferred date') }}: {{ $pieteikums->requested_date->format('d.m.Y') }}</span>
+                                <span>{{ $application->pavingType?->name ?? __('Paving type not specified') }}</span>
+                                <span>{{ $application->area_m2 ? $application->area_m2 . ' m²' : __('Area not specified') }}</span>
+                                @if ($application->requested_date)
+                                    <span>{{ __('Consultation date') }}: {{ $application->requested_date->format('d.m.Y') }}</span>
                                 @endif
                             </div>
-                            @if ($pieteikums->review)
-                                <p class="application-review-note">{{ __('Review submitted') }} · {{ $pieteikums->review->rating }}/5 {{ __('stars') }}</p>
-                            @elseif ($pieteikums->status === 'completed')
+                            @if ($application->estimate_total !== null)
+                                <p class="application-review-note">{{ __('Calculator estimate') }}: {{ number_format($application->estimate_total, 2, ',', ' ') }} €</p>
+                            @endif
+                            @if ($application->review)
+                                <p class="application-review-note">{{ __('Review submitted') }} · {{ $application->review->rating }}/5 {{ __('stars') }}</p>
+                            @elseif ($application->status === 'completed')
                                 <p class="application-review-note application-review-pending">{{ __('You can leave a review for this application below.') }}</p>
                             @endif
                         </article>
@@ -51,20 +54,20 @@
             @endif
         </section>
 
-        @if ($pieteikumi->contains(fn ($pieteikums) => $pieteikums->status === 'completed' && ! $pieteikums->review))
+        @if ($applications->contains(fn ($application) => $application->status === 'completed' && ! $application->review))
             <section class="form-shell review-shell">
                 <div class="form-intro">
                     <p class="eyebrow">{{ __('Your experience') }}</p>
                     <h2>{{ __('Leave a review') }}</h2>
                     <p>{{ __('Share your experience about a completed project.') }}</p>
                 </div>
-                <form class="application-form" method="POST" action="{{ route('atsauksmes.store') }}">
+                <form class="application-form" method="POST" action="{{ route('reviews.store') }}">
                     @csrf
-                    <label for="pieteikums_id">{{ __('Completed project') }}
-                        <select id="pieteikums_id" name="pieteikums_id" required>
-                            @foreach ($pieteikumi as $pieteikums)
-                                @if ($pieteikums->status === 'completed' && ! $pieteikums->review)
-                                    <option value="{{ $pieteikums->id }}">{{ $pieteikums->project_description }}</option>
+                    <label for="application_id">{{ __('Completed project') }}
+                        <select id="application_id" name="application_id" required>
+                            @foreach ($applications as $application)
+                                @if ($application->status === 'completed' && ! $application->review)
+                                    <option value="{{ $application->id }}">{{ $application->project_description }}</option>
                                 @endif
                             @endforeach
                         </select>
@@ -78,8 +81,8 @@
                             <option value="1">1 zvaigzne</option>
                         </select>
                     </label>
-                    <label for="atsauksme">{{ __('Review') }}
-                        <textarea id="atsauksme" name="atsauksme" rows="4" maxlength="2000" placeholder="{{ __('How was your experience?') }}"></textarea>
+                    <label for="review">{{ __('Review') }}
+                        <textarea id="review" name="review" rows="4" maxlength="2000" placeholder="{{ __('How was your experience?') }}"></textarea>
                     </label>
                     <button type="submit">{{ __('Send review') }}</button>
                 </form>

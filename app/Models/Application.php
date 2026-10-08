@@ -6,23 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Pieteikums extends Model
+class Application extends Model
 {
-    protected $table = 'pieteikums';
+    protected $table = 'applications';
 
     protected $casts = [
         'requested_date' => 'date',
+        'estimate_details' => 'array',
     ];
 
     protected $fillable = [
         'user_id',
-        'bruga_veids_id',
+        'paving_type_id',
         'client_name',
         'client_email',
         'client_phone',
         'project_description',
         'area_m2',
         'requested_date',
+        'estimate_total',
+        'estimate_details',
         'status',
         'admin_notes',
     ];
@@ -34,11 +37,11 @@ class Pieteikums extends Model
 
     public function pavingType(): BelongsTo
     {
-        return $this->belongsTo(BrugaVeids::class, 'bruga_veids_id');
+        return $this->belongsTo(PavingType::class, 'paving_type_id');
     }
 
     public function review(): HasOne
     {
-        return $this->hasOne(Atsauksme::class);
+        return $this->hasOne(Review::class);
     }
 }

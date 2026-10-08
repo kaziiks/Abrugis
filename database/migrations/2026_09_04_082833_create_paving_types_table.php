@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bruga_veids', function (Blueprint $table) {
+        if (Schema::hasTable('paving_types') || Schema::hasTable('bruga_veids')) {
+            return;
+        }
+
+        Schema::create('paving_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->decimal('price_per_m2', 8, 2);
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bruga_veids');
+        Schema::dropIfExists('paving_types');
     }
 };

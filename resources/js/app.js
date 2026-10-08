@@ -8,13 +8,16 @@ if (area && paving && removal && form) {
 
     const updateEstimate = () => {
         const squareMeters = Number(area.value);
-        if (!squareMeters || squareMeters < 1) {
-            area.reportValidity();
+        if (!Number.isFinite(squareMeters) || squareMeters < 1 || squareMeters > Number(area.max)) {
             return;
         }
-        const pavingPrice = Number(paving.value) || 0;
-        const basePrice = Number(document.querySelector('input[name="base"]:checked').value);
-        const removalPrice = removal.checked ? Number(removal.value) : 0;
+        const selectedBase = document.querySelector('input[name="base"]:checked');
+        if (!selectedBase || !paving.selectedOptions[0]) {
+            return;
+        }
+        const pavingPrice = Number(paving.selectedOptions[0].dataset.price);
+        const basePrice = Number(selectedBase.dataset.price);
+        const removalPrice = removal.checked ? Number(removal.dataset.price) : 0;
 
         document.querySelector('#paving-name').textContent = paving.selectedOptions[0]?.dataset.name || 'Bruģis';
         document.querySelector('#paving-total').textContent = format(squareMeters * pavingPrice);
@@ -24,8 +27,6 @@ if (area && paving && removal && form) {
         document.querySelector('#total').textContent = format(squareMeters * (pavingPrice + basePrice + removalPrice)).replace(' €', '');
     };
 
-    form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        updateEstimate();
-    });
+    form.addEventListener('input', updateEstimate);
+    form.addEventListener('change', updateEstimate);
 }

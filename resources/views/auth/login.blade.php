@@ -12,6 +12,9 @@
                         @endforeach
                     </ul>
                 @endif
+                @if (session('status'))
+                    <p class="success-note" role="status">{{ session('status') }}</p>
+                @endif
 
                 <form method="POST" action="{{ route('login') }}" class="auth-form">
                     @csrf
@@ -31,6 +34,7 @@
                 </form>
 
                 <p class="auth-meta">{{ __('No account yet?') }} <a href="{{ route('register') }}">{{ __('Register') }}</a></p>
+                <p class="auth-meta"><a href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a></p>
             </div>
         </section>
     </main>

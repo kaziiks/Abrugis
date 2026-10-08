@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pieteikums', function (Blueprint $table) {
+        if (Schema::hasTable('applications') || Schema::hasTable('pieteikums')) {
+            return;
+        }
+
+        Schema::create('applications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('bruga_veids_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('paving_type_id')->nullable()->constrained('paving_types')->nullOnDelete();
             $table->string('client_name');
             $table->string('client_email');
             $table->string('client_phone')->nullable();
@@ -31,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pieteikums');
+        Schema::dropIfExists('applications');
     }
 };

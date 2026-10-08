@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('portfolio_info')) {
+            return;
+        }
+
         Schema::create('portfolio_info', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('bruga_veids_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('paving_type_id')->constrained('paving_types')->cascadeOnDelete();
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('city');

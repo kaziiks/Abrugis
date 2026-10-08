@@ -18,13 +18,16 @@
                 <p>{{ __('Thank you. We have received your application and will contact you soon.') }}</p>
             @endif
             <div style="margin-top:24px;padding-top:18px;border-top:1px solid #d9e3de;">
-                <p style="margin:0 0 7px;"><strong>{{ __('Name') }}:</strong> {{ $pieteikums->client_name }}</p>
-                <p style="margin:0 0 7px;"><strong>{{ __('Email') }}:</strong> {{ $pieteikums->client_email }}</p>
-                <p style="margin:0 0 7px;"><strong>{{ __('Phone number') }}:</strong> {{ $pieteikums->client_phone }}</p>
-                @if ($pieteikums->requested_date)
-                    <p style="margin:0 0 7px;"><strong>{{ __('Preferred date') }}:</strong> {{ $pieteikums->requested_date->format('d.m.Y') }}</p>
+                <p style="margin:0 0 7px;"><strong>{{ __('Name') }}:</strong> {{ $application->client_name }}</p>
+                <p style="margin:0 0 7px;"><strong>{{ __('Email') }}:</strong> {{ $application->client_email }}</p>
+                <p style="margin:0 0 7px;"><strong>{{ __('Phone number') }}:</strong> {{ $application->client_phone }}</p>
+                @if ($application->requested_date)
+                    <p style="margin:0 0 7px;"><strong>{{ __('Consultation date') }}:</strong> {{ $application->requested_date->format('d.m.Y') }}</p>
                 @endif
-                <p style="margin:16px 0 0;"><strong>{{ __('Project description') }}:</strong><br>{{ $pieteikums->project_description }}</p>
+                <p style="margin:16px 0 0;"><strong>{{ __('Project description') }}:</strong><br>{{ $application->project_description }}</p>
+                @if ($application->estimate_total !== null)
+                    <p style="margin:16px 0 0;"><strong>{{ __('Calculator estimate') }}:</strong> {{ number_format($application->estimate_total, 2, ',', ' ') }} €</p>
+                @endif
             </div>
         </div>
     </div>

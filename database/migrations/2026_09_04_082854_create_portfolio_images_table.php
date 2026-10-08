@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('atsauksme', function (Blueprint $table) {
+        if (Schema::hasTable('portfolio_images') || Schema::hasTable('portfolio_bilde')) {
+            return;
+        }
+
+        Schema::create('portfolio_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pieteikums_id')->constrained()->cascadeOnDelete();
-            $table->string('author_name');
-            $table->unsignedTinyInteger('rating'); // 1-5
-            $table->text('atsauksme')->nullable();
+            $table->foreignId('portfolio_info_id')->constrained('portfolio_info')->cascadeOnDelete();
+            $table->string('image_path');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('atsauksme');
+        Schema::dropIfExists('portfolio_images');
     }
 };

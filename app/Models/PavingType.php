@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class BrugaVeids extends Model
+class PavingType extends Model
 {
-    protected $table = 'bruga_veids';
+    protected $table = 'paving_types';
 
     protected $fillable = [
         'name',
@@ -16,14 +16,13 @@ class BrugaVeids extends Model
         'image',
     ];
 
-    public function pieteikumi(): HasMany
+    public function applications(): HasMany
     {
-        return $this->hasMany(Pieteikums::class, 'bruga_veids_id');
+        return $this->hasMany(Application::class, 'paving_type_id');
     }
 
     public function portfolioItems(): HasMany
     {
-        return $this->hasMany(PortfolioInfo::class, 'bruga_veids_id');
-    
-}
+        return $this->hasMany(PortfolioInfo::class, 'paving_type_id');
+    }
 }

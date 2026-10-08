@@ -12,7 +12,7 @@ class PortfolioInfo extends Model
 
     protected $fillable = [
         'user_id',
-        'bruga_veids_id',
+        'paving_type_id',
         'title',
         'description',
         'city',
@@ -25,13 +25,13 @@ class PortfolioInfo extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function brugaVeids(): BelongsTo
+    public function pavingType(): BelongsTo
     {
-        return $this->belongsTo(BrugaVeids::class, 'bruga_veids_id');
+        return $this->belongsTo(PavingType::class, 'paving_type_id');
     }
 
-    public function bildes(): HasMany
+    public function images(): HasMany
     {
-        return $this->hasMany(PortfolioBilde::class);
+        return $this->hasMany(PortfolioImage::class);
     }
 }
