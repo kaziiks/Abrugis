@@ -6,6 +6,7 @@ use App\Models\Application;
 use App\Models\User;
 use Database\Seeders\AdminUserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use RuntimeException;
 use Tests\TestCase;
 
 class AdminApplicationsTest extends TestCase
@@ -35,6 +36,21 @@ class AdminApplicationsTest extends TestCase
         $this->seed(AdminUserSeeder::class);
 
         $this->assertTrue(password_verify('testing-admin-password', $admin->fresh()->password));
+    }
+
+    public function test_seeding_admin_requires_a_valid_configured_email(): void
+    {
+        config(['abrugis.admin.email' => null]);
+
+        try {
+            $this->seed(AdminUserSeeder::class);
+            $this->fail('Seeding an admin without a configured email should fail.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame(
+                'Set ADMIN_EMAIL to a valid email address before seeding the admin user.',
+                $exception->getMessage(),
+            );
+        }
     }
 
     public function test_admin_can_view_all_applications(): void

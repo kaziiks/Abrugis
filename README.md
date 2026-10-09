@@ -17,7 +17,7 @@ The example configuration uses MySQL. Create the application database:
 CREATE DATABASE abrugis CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-Copy `.env.example` to `.env` (`Copy-Item .env.example .env` in PowerShell), set `ADMIN_PASSWORD` to a unique value of at least 12 characters, and run the setup script:
+Copy `.env.example` to `.env` (`Copy-Item .env.example .env` in PowerShell), set `ADMIN_EMAIL` to the administrator's email address and `ADMIN_PASSWORD` to a unique value of at least 12 characters, then run the setup script:
 
 ```sh
 composer setup
@@ -26,11 +26,11 @@ php artisan storage:link
 php artisan serve
 ```
 
-The setup script installs dependencies, creates the application key, runs migrations, and builds frontend assets. Open the URL printed by `php artisan serve`. The seeders add the paving catalog, sample portfolio projects, and an administrator account. The seeded account email is configured with `ADMIN_EMAIL`; change it from the example value for any non-local environment. Seeded demo data is intended for development, not as production content.
+The setup script installs dependencies, creates the application key, runs migrations, and builds frontend assets. Open the URL printed by `php artisan serve`. The seeders add the paving catalog, sample portfolio projects, and an administrator account. Seeding fails unless `ADMIN_EMAIL` is a valid address and `ADMIN_PASSWORD` is at least 12 characters. Seeded demo data is intended for development, not as production content.
 
 The schema migration renames the previous Latvian table, column, and foreign-key names in place, preserving existing records.
 
-The `public` filesystem disk is used for portfolio uploads. `php artisan storage:link` makes those uploads available to the website. Seeded portfolio images are registered only when their files exist; projects without an available image use the site's built-in placeholder.
+The `public` filesystem disk is used for portfolio uploads. `php artisan storage:link` makes those uploads available to the website. The repository includes the seeded portfolio and before/after demo images. Seeded portfolio images are registered only when their files exist; projects without an available image use the site's built-in placeholder.
 
 ## Configuration
 
